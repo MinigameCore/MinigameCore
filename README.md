@@ -1,5 +1,7 @@
 # MinigameCore [![Build Status](https://travis-ci.org/MinigameCore/MinigameCore.svg?branch=master)](https://travis-ci.org/MinigameCore/MinigameCore)
 
+[![Join the chat at https://gitter.im/MinigameCore/MinigameCore](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/MinigameCore/MinigameCore?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+
 MinigameCore is a Sponge plugin that provides a core set of functions for a minigame to function. This significantly decreases the time needed to create a minigame.
 
 ###Implementing Features
