@@ -25,7 +25,6 @@
 package me.flibio.minigamecore.economy;
 
 import me.flibio.minigamecore.MinigameCore;
-
 import org.spongepowered.api.Game;
 import org.spongepowered.api.event.Listener;
 import org.spongepowered.api.event.cause.Cause;
@@ -49,8 +48,8 @@ public class EconomyManager {
     private Currency currency;
 
     /**
-     * Provides easy-to-use economy integration
-     * 
+     * Provides easy-to-use economy integration.
+     *
      * @param game The game object
      */
     public EconomyManager(Game game) {
@@ -59,95 +58,91 @@ public class EconomyManager {
 
     @Listener
     public void onChangeServiceProvider(ChangeServiceProviderEvent event) {
-        if (event.getService().equals(EconomyService.class) && !foundProvider) {
+        if (event.getService().equals(EconomyService.class) && !this.foundProvider) {
             Object raw = event.getNewProviderRegistration().getProvider();
             if (raw instanceof EconomyService) {
-                foundProvider = true;
-                economy = (EconomyService) raw;
-                currency = economy.getDefaultCurrency();
+                this.foundProvider = true;
+                this.economy = (EconomyService) raw;
+                this.currency = this.economy.getDefaultCurrency();
             } else {
-                foundProvider = false;
+                this.foundProvider = false;
             }
         }
     }
 
     /**
-     * Sets the balance of a player
-     * 
+     * Sets the balance of a player.
+     *
      * @param uuid UUID of the player whose balance to change
      * @param amount The amount to set the player's balance to
-     * @return Boolean based on if the method was successful or not
+     * @return Boolean based on if  the method was successful or not
      */
     public boolean setBalance(UUID uuid, BigDecimal amount) {
-        if (!foundProvider)
-            return false;
-        Optional<UniqueAccount> uOpt = economy.getAccount(uuid);
-        if (!uOpt.isPresent())
-            return false;
-        UniqueAccount account = uOpt.get();
-        if (account.setBalance(currency, amount, cause).getResult().equals(ResultType.SUCCESS)) {
-            return true;
-        } else {
+        if (!this.foundProvider) {
             return false;
         }
+        Optional<UniqueAccount> uOpt = this.economy.getAccount(uuid);
+        if (!uOpt.isPresent()) {
+            return false;
+        }
+        UniqueAccount account = uOpt.get();
+        return account.setBalance(this.currency, amount, this.cause).getResult().equals(ResultType.SUCCESS);
     }
 
     /**
-     * Gets the balance of a player
-     * 
+     * Gets the balance of a player.
+     *
      * @param uuid UUID of the player to get the balance of
      * @return The balance of the player
      */
     public Optional<BigDecimal> getBalance(UUID uuid) {
-        if (!foundProvider)
+        if (!this.foundProvider) {
             return Optional.empty();
-        Optional<UniqueAccount> uOpt = economy.getAccount(uuid);
-        if (!uOpt.isPresent())
+        }
+        Optional<UniqueAccount> uOpt = this.economy.getAccount(uuid);
+        if (!uOpt.isPresent()) {
             return Optional.empty();
+        }
         UniqueAccount account = uOpt.get();
-        return Optional.of(account.getBalance(currency));
+        return Optional.of(account.getBalance(this.currency));
     }
 
     /**
-     * Adds currency to a players balance
-     * 
+     * Adds currency to a players balance.
+     *
      * @param uuid UUID of the player whose balance to change
      * @param amount Amount of currency to add to the player
-     * @return Boolean based on if the method was successful or not
+     * @return Boolean based on if  the method was successful or not
      */
     public boolean addCurrency(UUID uuid, BigDecimal amount) {
-        if (!foundProvider)
-            return false;
-        Optional<UniqueAccount> uOpt = economy.getAccount(uuid);
-        if (!uOpt.isPresent())
-            return false;
-        UniqueAccount account = uOpt.get();
-        if (account.deposit(currency, amount, cause).getResult().equals(ResultType.SUCCESS)) {
-            return true;
-        } else {
+        if (!this.foundProvider) {
             return false;
         }
+        Optional<UniqueAccount> uOpt = this.economy.getAccount(uuid);
+        if (!uOpt.isPresent()) {
+            return false;
+        }
+        UniqueAccount account = uOpt.get();
+        return account.deposit(this.currency, amount, this.cause).getResult().equals(ResultType.SUCCESS);
     }
 
     /**
-     * Removes currency from a players balance
-     * 
+     * Removes currency from a players balance.
+     *
      * @param uuid UUID of the player whose balance to change
      * @param amount Amount of currency to remove from the player
-     * @return Boolean based on if the method was successful or not
+     * @return Boolean based on if  the method was successful or not
      */
     public boolean removeCurrency(UUID uuid, BigDecimal amount) {
-        if (!foundProvider)
-            return false;
-        Optional<UniqueAccount> uOpt = economy.getAccount(uuid);
-        if (!uOpt.isPresent())
-            return false;
-        UniqueAccount account = uOpt.get();
-        if (account.withdraw(currency, amount, cause).getResult().equals(ResultType.SUCCESS)) {
-            return true;
-        } else {
+        if (!this.foundProvider) {
             return false;
         }
+        Optional<UniqueAccount> uOpt = this.economy.getAccount(uuid);
+        if (!uOpt.isPresent()) {
+            return false;
+        }
+        UniqueAccount account = uOpt.get();
+        return account.withdraw(this.currency, amount, this.cause).getResult().equals(ResultType.SUCCESS);
     }
 
 }

@@ -5,29 +5,20 @@ plugins {
     id 'maven'
     id 'com.github.hierynomus.license' version '0.12.1'
     id 'net.ellune.blossom' version '1.0.1'
+    id 'checkstyle'
 }
 
-group 'me.flibio'
-version '1.0.0'
+defaultTasks 'licenseFormat', 'clean', 'build'
 
 task wrapper(type: Wrapper) {
-  gradleVersion = '2.9'
-  distributionUrl = "https://services.gradle.org/distributions/gradle-$gradleVersion-all.zip"
+    gradleVersion = '2.11'
 }
-
-apply plugin: 'net.ellune.blossom'
 
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
 
-defaultTasks 'licenseFormat'
-
-jar {
-    manifest {
-        attributes 'Implementation-Title': project.name,
-                   'Implementation-Version': project.version
-    }
-}
+archivesBaseName = project.name
+version = project.version
 
 repositories {
     jcenter()
@@ -38,7 +29,14 @@ repositories {
 }
 
 dependencies {
-    compile 'org.spongepowered:spongeapi:3.1.0-SNAPSHOT'
+    compile "org.spongepowered:spongeapi:${project.apiVersion}"
+}
+
+jar {
+    manifest {
+        attributes 'Implementation-Title': project.name,
+                   'Implementation-Version': project.version
+    }
 }
 
 license {
@@ -61,6 +59,45 @@ license {
     mapping {
         java = 'SLASHSTAR_STYLE'
     }
+}
+
+javadoc {
+    options.encoding = 'UTF-8'
+    options.charSet = 'UTF-8'
+    options.addStringOption('Xdoclint:none', '-quiet')
+}
+
+task javadocJar(type: Jar, dependsOn: javadoc) {
+    classifier = 'javadoc'
+    from javadoc.destinationDir
+}
+
+task sourceJar(type: Jar, dependsOn: compileJava) {
+    classifier = 'source'
+    from sourceSets.main.allSource
+}
+
+tasks.withType(Javadoc) {
+    options.addStringOption('Xdoclint:none', '-quiet')
+}
+
+artifacts {
+    archives sourceJar
+    archives javadocJar
+}
+
+checkstyle {
+    toolVersion = '6.15'
+    configFile = file('checkstyle.xml')
+    configProperties = [
+        "name" : project.name,
+        "owner" : project.owner,
+        "url" : project.url,
+        "year" : project.currentYear,
+        "basedir": project.projectDir,
+        "suppressions": project.file('checkstyle-suppressions.xml'),
+        "severity": 'warning'
+    ]
 }
 
 blossom {

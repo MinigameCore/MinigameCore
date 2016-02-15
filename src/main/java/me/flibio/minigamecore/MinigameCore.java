@@ -24,27 +24,26 @@
  */
 package me.flibio.minigamecore;
 
+import com.google.inject.Inject;
 import org.slf4j.Logger;
 import org.spongepowered.api.Game;
 import org.spongepowered.api.event.Listener;
 import org.spongepowered.api.event.game.state.GamePreInitializationEvent;
 import org.spongepowered.api.plugin.Plugin;
 
-import com.google.inject.Inject;
-
 @Plugin(id = "MinigameCore", name = "MinigameCore", version = "1.0.0")
 public class MinigameCore {
 
-    @Inject private Logger logger;
-
-    @Inject private Game game;
-
     public static MinigameCore access;
+    @Inject
+    private Logger logger;
+    @Inject
+    private Game game;
 
     @Listener
     public void onServerInitialize(GamePreInitializationEvent event) {
-        access = this;
-        logger.info("Initializing MinigameCore...");
+        MinigameCore.access = this;
+        this.logger.info("Initializing MinigameCore...");
     }
 
     public Logger getLogger() {

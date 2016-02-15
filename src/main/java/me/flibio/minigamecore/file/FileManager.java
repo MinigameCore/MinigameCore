@@ -29,7 +29,6 @@ import me.flibio.minigamecore.arena.ArenaData;
 import ninja.leaping.configurate.ConfigurationNode;
 import ninja.leaping.configurate.hocon.HoconConfigurationLoader;
 import ninja.leaping.configurate.loader.ConfigurationLoader;
-
 import org.slf4j.Logger;
 import org.spongepowered.api.Game;
 import org.spongepowered.api.world.Location;
@@ -50,8 +49,8 @@ public class FileManager {
     private String name;
 
     /**
-     * Provides easy-to-use file configuration and data storage
-     * 
+     * Provides easy-to-use file configuration and data storage.
+     *
      * @param logger An instance of the logger
      * @param name The name of the game
      */
@@ -62,8 +61,8 @@ public class FileManager {
     }
 
     /**
-     * Generates a folder with a specified name
-     * 
+     * Generates a folder with a specified name.
+     *
      * @param name The name of the folder to generate
      * @return If the method was successful or not
      */
@@ -72,25 +71,24 @@ public class FileManager {
         try {
             if (!folder.exists()) {
                 if (folder.mkdir()) {
-                    logger.info("Successfully generated folder " + name);
+                    this.logger.info("Successfully generated folder " + name);
                     return true;
                 } else {
-                    logger.error("Error generating folder " + name);
+                    this.logger.error("Error generating folder " + name);
                     return false;
                 }
             } else {
                 return true;
             }
         } catch (Exception e) {
-            logger.error("Error generating folder: " + e.getMessage());
+            this.logger.error("Error generating folder: " + e.getMessage());
             return false;
         }
     }
 
     /**
-     * Initializes a file into the file manager. This must be done each server
-     * start.
-     * 
+     * Initializes a file into the file manager. This must be done each server start.
+     *
      * @param fileName The name of the file to initialize
      * @return If the method was successful or not
      */
@@ -99,7 +97,7 @@ public class FileManager {
             fileName = fileName.replace(".conf", "").trim();
         }
         if (generateFolder(this.name)) {
-            if (!files.containsKey(fileName)) {
+            if (!this.files.containsKey(fileName)) {
                 // File isn't registered
                 File file = new File("config/" + this.name + "/" + fileName + ".conf");
                 if (!file.exists()) {
@@ -110,10 +108,10 @@ public class FileManager {
                                 .setFile(new File("config/" + this.name + "/" + fileName + ".conf")).build();
                         ConfigurationNode root;
                         root = manager.load();
-                        files.put(fileName, root);
+                        this.files.put(fileName, root);
                         return true;
                     } catch (IOException e) {
-                        logger.error("Error initializing file " + fileName + ": " + e.getMessage());
+                        this.logger.error("Error initializing file " + fileName + ": " + e.getMessage());
                         return false;
                     }
                 } else {
@@ -124,10 +122,10 @@ public class FileManager {
                     // Try to load the file
                     try {
                         root = manager.load();
-                        files.put(fileName, root);
+                        this.files.put(fileName, root);
                         return true;
                     } catch (IOException e) {
-                        logger.error("Error initializing file " + fileName + ": " + e.getMessage());
+                        this.logger.error("Error initializing file " + fileName + ": " + e.getMessage());
                         return false;
                     }
                 }
@@ -140,10 +138,10 @@ public class FileManager {
     }
 
     /**
-     * Adds a default option to the specified file. Allows for "." seperators in
-     * the key path. If the specified path has no value set, method will set it
-     * to the default value specified.
-     * 
+     * Adds a default option to the specified file. Allows for "." seperators
+     * in the key path. If the specified path has no value set, method will
+     * set it to the default value specified.
+     *
      * @param fileName The name of the file
      * @param key The path of the default option
      * @param value The default value of the option
@@ -168,7 +166,7 @@ public class FileManager {
 
     /**
      * Saves a file. Writes to disk and updates the list of files.
-     * 
+     *
      * @param fileName The name of the file to save
      * @param fileData The file data to be saved
      * @return If the method was successful or not
@@ -184,7 +182,7 @@ public class FileManager {
                 manager.save(fileData);
                 return true;
             } catch (IOException e) {
-                logger.error("Error saving " + fileName + ": " + e.getMessage());
+                this.logger.error("Error saving " + fileName + ": " + e.getMessage());
                 return false;
             }
         } else {
@@ -194,8 +192,8 @@ public class FileManager {
     }
 
     /**
-     * Gets an initialized file
-     * 
+     * Gets an initialized file.
+     *
      * @param name The name of the file to get
      * @return The ConfigurationNode of the file
      */
@@ -203,16 +201,16 @@ public class FileManager {
         if (name.contains(".conf")) {
             name = name.replace(".conf", "").trim();
         }
-        if (files.containsKey(name)) {
-            return Optional.of(files.get(name));
+        if (this.files.containsKey(name)) {
+            return Optional.of(this.files.get(name));
         } else {
             return Optional.empty();
         }
     }
 
     /**
-     * Saves an arena to the file
-     * 
+     * Saves an arena to the file.
+     *
      * @param arena The arena to save
      * @param fileName The location to save the arena
      * @return If arena was saved successfully or not
@@ -242,8 +240,8 @@ public class FileManager {
     }
 
     /**
-     * Loads all arenas from a specified file
-     * 
+     * Loads all arenas from a specified file.
+     *
      * @param fileName The file to load arenas from
      * @return All arenas found in the file
      */
@@ -269,13 +267,13 @@ public class FileManager {
                             if (rawVal instanceof String) {
                                 arenaData.setVariable(customVar, (String) rawVal);
                             } else if (rawVal instanceof Integer) {
-                                arenaData.setVariable(customVar, (int) rawVal);
+                                arenaData.setVariable(customVar, (Integer) rawVal);
                             } else if (rawVal instanceof Boolean) {
-                                arenaData.setVariable(customVar, (boolean) rawVal);
+                                arenaData.setVariable(customVar, (Boolean) rawVal);
                             } else if (rawVal instanceof Double) {
-                                arenaData.setVariable(customVar, (double) rawVal);
+                                arenaData.setVariable(customVar, (Double) rawVal);
                             } else if (rawVal instanceof Float) {
-                                arenaData.setVariable(customVar, (float) rawVal);
+                                arenaData.setVariable(customVar, (Float) rawVal);
                             }
                         }
                     }
@@ -290,7 +288,7 @@ public class FileManager {
                     }
                     arenaDatas.add(arenaData);
                 } catch (Exception e) {
-                    logger.error("Corrupt arena data for arena " + child + "!");
+                    this.logger.error("Corrupt arena data for arena " + child + "!");
                 }
             }
         }
@@ -309,11 +307,11 @@ public class FileManager {
         ConfigurationNode y = node.getNode("Y");
         ConfigurationNode z = node.getNode("Z");
         ConfigurationNode world = node.getNode("w");
-        if (x == null || y == null || z == null || world == null || !game.getServer().getWorld(world.getString()).isPresent()) {
+        if (x == null || y == null || z == null || world == null || !this.game.getServer().getWorld(world.getString()).isPresent()) {
             return Optional.empty();
         }
         try {
-            return Optional.of(new Location<World>(game.getServer().getWorld(world.getString()).get(),
+            return Optional.of(new Location<World>(this.game.getServer().getWorld(world.getString()).get(),
                     x.getInt(), y.getInt(), z.getInt()));
         } catch (Exception e) {
             return Optional.empty();
