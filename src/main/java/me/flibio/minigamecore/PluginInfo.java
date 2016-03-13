@@ -25,15 +25,15 @@
 package me.flibio.minigamecore;
 
 /**
- * General information about the {@link Minigamecore} plugin
+ * General information about the {@link MinigameCore} plugin.
  */
 public class PluginInfo {
-
-    private PluginInfo() {
-    }
 
     public static final String ID = "MinigameCore";
     public static final String NAME = "MinigameCore";
     public static final String VERSION = "@project.version@";
     public static final String DEPENDENCIES = "";
+
+    private PluginInfo() {
+    }
 }

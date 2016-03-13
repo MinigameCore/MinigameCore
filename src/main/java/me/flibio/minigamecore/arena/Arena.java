@@ -24,8 +24,8 @@
  */
 package me.flibio.minigamecore.arena;
 
+import com.google.common.collect.ImmutableList;
 import me.flibio.minigamecore.events.ArenaStateChangeEvent;
-
 import org.spongepowered.api.Game;
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.effect.sound.SoundType;
@@ -57,9 +57,8 @@ public abstract class Arena {
     private Game game;
 
     /**
-     * An arena is an object that can handle spawn locations, lobbies, games,
-     * and more.
-     * 
+     * An arena is an object that can handle spawn locations, lobbies, games, and more.
+     *
      * @param arenaName The name of the arena
      * @param game An instance of the game
      * @param plugin An instance of the main class of your plugin
@@ -73,123 +72,123 @@ public abstract class Arena {
     }
 
     /**
-     * Adds an online player
-     * 
+     * Adds an online player.
+     *
      * @param player The player to add
      */
     public abstract void addOnlinePlayer(Player player);
 
     /**
-     * Removes an online player
-     * 
+     * Removes an online player.
+     *
      * @param player The player to remove
      */
     public abstract void removeOnlinePlayer(Player player);
 
     /**
-     * Gets all of the players in an arena
-     * 
+     * Gets all of the players in an arena.
+     *
      * @return All the players in the arena
      */
-    public CopyOnWriteArrayList<Player> getOnlinePlayers() {
-        return onlinePlayers;
+    public List<Player> getOnlinePlayers() {
+        return ImmutableList.copyOf(this.onlinePlayers);
     }
 
     /**
-     * Calls an state change on the arena
-     * 
+     * Calls an state change on the arena.
+     *
      * @param changeTo The state to change the arena to
      */
     public void arenaStateChange(ArenaState changeTo) {
-        if (!arenaStates.contains(changeTo)) {
+        if (!this.arenaStates.contains(changeTo)) {
             return;
         }
-        arenaState = changeTo;
-        // Post the arena state change event
-        game.getEventManager().post(new ArenaStateChangeEvent(this));
-        // Run a runnable if it is set
+        this.arenaState = changeTo;
+        //Post the arena state change event
+        this.game.getEventManager().post(new ArenaStateChangeEvent(this));
+        //Run a runnable if it is set
         if (arenaStateRunnableExists(changeTo)) {
-            runnables.get(changeTo).run();
+            this.runnables.get(changeTo).run();
         }
     }
 
     // Other Arena Properties
 
     /**
-     * Gets the arena data
-     * 
+     * Gets the arena data.
+     *
      * @return The arena data
      */
     public ArenaData getData() {
-        return arenaData;
+        return this.arenaData;
     }
 
     /**
-     * Sets the arena data
-     * 
+     * Sets the arena data.
+     *
      * @param data The arena data to set
      */
     public void overrideData(ArenaData data) {
-        arenaData = data;
+        this.arenaData = data;
     }
 
     /**
-     * Gets the state of the arena
-     * 
+     * Gets the state of the arena.
+     *
      * @return The state of the arena
      */
     public ArenaState getArenaState() {
-        return arenaState;
+        return this.arenaState;
     }
 
     /**
-     * Adds a new arena state
-     * 
+     * Adds a new arena state.
+     *
      * @param state The arena state to add
      * @return If the method was successful or not
      */
     public boolean addArenaState(ArenaState state) {
-        // Check ifthe state exists
+        // Check if the state exists
         if (arenaStateExists(state)) {
             return false;
         } else {
-            arenaStates.add(state);
+            this.arenaStates.add(state);
             return true;
         }
     }
 
     /**
-     * Removes an arena state
-     * 
+     * Removes an arena state.
+     *
      * @param state The arena state to remove
      * @return If the method was successful or not
      */
     public boolean removeArenaState(ArenaState state) {
-        // Check ifthe state is a default state
+        // Check if the state is a default state
         if (getDefaultArenaStates().contains(state) || !arenaStateExists(state)) {
             return false;
         } else {
-            if (runnables.keySet().contains(state)) {
-                runnables.remove(state);
+            if (this.runnables.keySet().contains(state)) {
+                this.runnables.remove(state);
             }
-            arenaStates.remove(state);
+            this.arenaStates.remove(state);
             return true;
         }
     }
 
     /**
-     * Checks if an arena state exists
-     * 
+     * Checks if an arena state exists.
+     *
      * @param arenaState The arena state to check for
      * @return If the arena state exists
      */
     public boolean arenaStateExists(ArenaState arenaState) {
-        return arenaStates.contains(arenaState);
+        return this.arenaStates.contains(arenaState);
     }
 
     /**
-     * Gets a list of the default arena states
-     * 
+     * Gets a list of the default arena states.
+     *
      * @return A list of the default arena states
      */
     public List<ArenaState> getDefaultArenaStates() {
@@ -198,8 +197,8 @@ public abstract class Arena {
     }
 
     /**
-     * Adds an arena state runnable
-     * 
+     * Adds an arena state runnable.
+     *
      * @param state The state to add
      * @param runnable The runnable to add
      * @return If the method was successful or not
@@ -208,13 +207,13 @@ public abstract class Arena {
         if (!arenaStateExists(state) || arenaStateRunnableExists(state)) {
             return false;
         }
-        runnables.put(state, runnable);
+        this.runnables.put(state, runnable);
         return true;
     }
 
     /**
-     * Removes an arena state runnable
-     * 
+     * Removes an arena state runnable.
+     *
      * @param state The arena state to remove
      * @return If the method was successful or not
      */
@@ -222,38 +221,38 @@ public abstract class Arena {
         if (!arenaStateExists(state) || !arenaStateRunnableExists(state)) {
             return false;
         }
-        runnables.remove(state);
+        this.runnables.remove(state);
         return true;
     }
 
     /**
-     * Checks if an arena state runnable exists
-     * 
+     * Checks if an arena state runnable exists.
+     *
      * @param state The state to check for
      * @return If the arena state runnable exists
      */
     public boolean arenaStateRunnableExists(ArenaState state) {
-        return runnables.keySet().contains(state);
+        return this.runnables.keySet().contains(state);
     }
 
     /**
-     * Gets an arena state runnable
-     * 
+     * Gets an arena state runnable.
+     *
      * @param state The state to get the runnable of
      * @return The arena state runnable
      */
     public Optional<Runnable> getArenaStateRunnable(ArenaState state) {
         if (arenaStateRunnableExists(state)) {
-            return Optional.of(runnables.get(state));
+            return Optional.of(this.runnables.get(state));
         } else {
             return Optional.empty();
         }
     }
 
     /**
-     * Deserializes XML formatted text. Example: <c n="red">Something went
-     * wrong!</c>
-     * 
+     * Deserializes XML formatted text. Example:
+     * {@code <c n="red">Something went wrong!</c>}
+     *
      * @param text The text to deserialize
      * @return The deserialzed text
      */
@@ -262,22 +261,21 @@ public abstract class Arena {
     }
 
     /**
-     * Deserializes XML formatted text. Example: <c n="green">%name% has joined
-     * the game!</c>
-     * 
+     * Deserializes XML formatted text. Example:
+     * {@code <c n="green">%name% has joined the game!</c>}
+     *
      * @param text The text to deserialize
      * @param old The string to replace before deserialization
      * @param replacement What to replace the string with
      * @return The deserialzed text
      */
     public Text deserialize(String text, String old, String replacement) {
-        text.replaceAll(old, replacement);
-        return TextSerializers.TEXT_XML.deserialize(text);
+        return TextSerializers.TEXT_XML.deserialize(text.replaceAll(old, replacement));
     }
 
     /**
-     * Broadcasts the message to the entire server
-     * 
+     * Broadcasts the message to the entire server.
+     *
      * @param text The text to broadcast
      */
     public void broadcast(Text text) {
@@ -285,14 +283,14 @@ public abstract class Arena {
     }
 
     /**
-     * Plays a sound to all players in the game
-     * 
+     * Plays a sound to all players in the game.
+     *
      * @param type The type of sound to play
      * @param volume The volume of the sound
      * @param pitch The pitch of the sound
      */
     public void broadcastSound(SoundType type, int volume, int pitch) {
-        for (Player player : onlinePlayers) {
+        for (Player player : this.onlinePlayers) {
             player.playSound(type, player.getLocation().getPosition(), volume, pitch);
         }
     }
@@ -301,7 +299,7 @@ public abstract class Arena {
 
     @Listener
     public void onPlayerDisconnect(ClientConnectionEvent.Disconnect event) {
-        if (arenaData.isTriggerPlayerEvents()) {
+        if (this.arenaData.isTriggerPlayerEvents()) {
             Player player = event.getTargetEntity();
             removeOnlinePlayer(player);
             event.setChannel(MessageChannel.TO_NONE);
@@ -310,7 +308,7 @@ public abstract class Arena {
 
     @Listener
     public void onPlayerJoin(ClientConnectionEvent.Join event) {
-        if (arenaData.isTriggerPlayerEvents()) {
+        if (this.arenaData.isTriggerPlayerEvents()) {
             Player player = event.getTargetEntity();
             addOnlinePlayer(player);
             event.setChannel(MessageChannel.TO_NONE);
@@ -320,11 +318,12 @@ public abstract class Arena {
     @Listener
     public void onBlockModify(ChangeBlockEvent event) {
         Optional<Player> playerOptional = event.getCause().first(Player.class);
-        if (!playerOptional.isPresent())
+        if (!playerOptional.isPresent()) {
             return;
-        if (!arenaData.isModifyLobbyBlocks()) {
-            if (arenaState.equals(ArenaStates.COUNTDOWN_CANCELLED) || arenaState.equals(ArenaStates.LOBBY_COUNTDOWN) ||
-                    arenaState.equals(ArenaStates.LOBBY_WAITING)) {
+        }
+        if (!this.arenaData.isModifyLobbyBlocks()) {
+            if (this.arenaState.equals(ArenaStates.COUNTDOWN_CANCELLED) || this.arenaState.equals(ArenaStates.LOBBY_COUNTDOWN) ||
+                    this.arenaState.equals(ArenaStates.LOBBY_WAITING)) {
                 event.setCancelled(true);
             }
         }
@@ -334,9 +333,9 @@ public abstract class Arena {
     public void onPlayerDamage(DamageEntityEvent event) {
         Optional<Player> playerOptional = event.getCause().first(Player.class);
         if (event.getTargetEntity() instanceof Player || playerOptional.isPresent()) {
-            if (!arenaData.isAllowLobbyDamage()) {
-                if (arenaState.equals(ArenaStates.COUNTDOWN_CANCELLED) || arenaState.equals(ArenaStates.LOBBY_COUNTDOWN) ||
-                        arenaState.equals(ArenaStates.LOBBY_WAITING)) {
+            if (!this.arenaData.isAllowLobbyDamage()) {
+                if (this.arenaState.equals(ArenaStates.COUNTDOWN_CANCELLED) || this.arenaState.equals(ArenaStates.LOBBY_COUNTDOWN) ||
+                        this.arenaState.equals(ArenaStates.LOBBY_WAITING)) {
                     event.setCancelled(true);
                 }
             }

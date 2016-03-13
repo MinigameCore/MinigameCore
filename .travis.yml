@@ -1,17 +1,14 @@
 language: java
 jdk:
 - oraclejdk8
-branches:
-  only:
-  - master
 install:   
 - mkdir travis-phantomjs   
 - wget https://s3.amazonaws.com/travis-phantomjs/phantomjs-2.0.0-ubuntu-12.04.tar.bz2 -O $PWD/travis-phantomjs/phantomjs-2.0.0-ubuntu-12.04.tar.bz2   
 - tar -xvf $PWD/travis-phantomjs/phantomjs-2.0.0-ubuntu-12.04.tar.bz2 -C $PWD/travis-phantomjs   
 - export PATH=$PWD/travis-phantomjs:$PATH
-- gradle build
-script:
 - chmod +x ./gradlew
+script:
+- ./gradlew
 after_success:
 - 'if [ ${TRAVIS_PULL_REQUEST} != "false" ]; then exit; fi'
 - 'CURRENT_TAG=$(phantomjs gettag.js)'

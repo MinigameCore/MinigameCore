@@ -25,7 +25,6 @@
 package me.flibio.minigamecore.events;
 
 import me.flibio.minigamecore.arena.Arena;
-
 import org.spongepowered.api.event.Cancellable;
 import org.spongepowered.api.event.cause.Cause;
 import org.spongepowered.api.event.impl.AbstractEvent;
@@ -36,8 +35,8 @@ public class ArenaStateChangeEvent extends AbstractEvent implements Cancellable 
     private Arena arena;
 
     /**
-     * Called when an arena changes its state
-     * 
+     * Called when an arena changes its state.
+     *
      * @param arena The arena whose state changed
      */
     public ArenaStateChangeEvent(Arena arena) {
@@ -45,8 +44,8 @@ public class ArenaStateChangeEvent extends AbstractEvent implements Cancellable 
     }
 
     /**
-     * Gets whichever arena's state changed
-     * 
+     * Gets whichever arena's state changed.
+     *
      * @return The arena whose state changed
      */
     public Arena getArena() {
@@ -55,7 +54,7 @@ public class ArenaStateChangeEvent extends AbstractEvent implements Cancellable 
 
     @Override
     public boolean isCancelled() {
-        return cancelled;
+        return this.cancelled;
     }
 
     @Override

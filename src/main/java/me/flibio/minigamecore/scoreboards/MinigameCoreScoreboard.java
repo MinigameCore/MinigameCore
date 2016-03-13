@@ -25,15 +25,13 @@
 package me.flibio.minigamecore.scoreboards;
 
 import me.flibio.minigamecore.scoreboards.ScoreboardManager.ScoreboardType;
-
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.scoreboard.Scoreboard;
 
 public class MinigameCoreScoreboard {
 
-    private ScoreboardType scoreboardType;
     protected Scoreboard scoreboard;
-
+    private ScoreboardType scoreboardType;
     private String name;
 
     public MinigameCoreScoreboard(ScoreboardType type, String name) {
@@ -42,8 +40,8 @@ public class MinigameCoreScoreboard {
     }
 
     /**
-     * Gets the name of the scoreboard
-     * 
+     * Gets the name of the scoreboard.
+     *
      * @return The name of the scoreboard
      */
     public String getName() {
@@ -51,8 +49,8 @@ public class MinigameCoreScoreboard {
     }
 
     /**
-     * Gets the type of the scoreboard
-     * 
+     * Gets the type of the scoreboard.
+     *
      * @return The type of the scoreboard
      */
     public ScoreboardType getType() {
@@ -60,11 +58,11 @@ public class MinigameCoreScoreboard {
     }
 
     /**
-     * Displays the scoreboard to a player
-     * 
+     * Displays the scoreboard to a player.
+     *
      * @param player The player to display the scoreboard to
      */
     public void displayToPlayer(Player player) {
-        player.setScoreboard(scoreboard);
+        player.setScoreboard(this.scoreboard);
     }
 }

@@ -32,42 +32,42 @@ public class KitManager {
     private CopyOnWriteArrayList<Kit> kits = new CopyOnWriteArrayList<Kit>();
 
     /**
-     * Manages all of the kits in a game
+     * Manages all of the kits in a game.
      */
     public KitManager() {
 
     }
 
     /**
-     * Registers a new kit with the kit manager
-     * 
+     * Registers a new kit with the kit manager.
+     *
      * @param kit The kit to register
      * @return Boolean based on if the method was successful or not
      */
     public boolean registerKit(Kit kit) {
-        // TODO
+        //TODO
         return false;
     }
 
     /**
-     * Removes a kit from the kit manager
-     * 
+     * Removes a kit from the kit manager.
+     *
      * @param name Name of the kit to remove
      * @return Boolean based on if the method was successful or not
      */
     public boolean removeKit(String name) {
-        // TODO
+        //TODO
         return false;
     }
 
     /**
-     * Gets a kit from the kit manager
-     * 
+     * Gets a kit from the kit manager.
+     *
      * @param name The name of the kit to get
      * @return Optional of the kit
      */
     public Optional<Kit> getKit(String name) {
-        for (Kit kit : kits) {
+        for (Kit kit : this.kits) {
             if (kit.getName().equalsIgnoreCase(name)) {
                 return Optional.of(kit);
             }
@@ -76,13 +76,13 @@ public class KitManager {
     }
 
     /**
-     * Checks if a kit exists
-     * 
+     * Checks if a kit exists.
+     *
      * @param name The name of the kit to check for
      * @return Boolean based on if the kit was found or not
      */
     public boolean kitExists(String name) {
-        for (Kit kit : kits) {
+        for (Kit kit : this.kits) {
             if (kit.getName().equalsIgnoreCase(name)) {
                 return true;
             }
