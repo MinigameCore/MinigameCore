@@ -1,59 +1,36 @@
+import java.time.LocalDate
+
 plugins {
-    id 'java'
     id 'eclipse'
     id 'maven'
     id 'com.github.hierynomus.license' version '0.12.1'
     id 'com.diffplug.gradle.spotless' version '1.3.2'
+    id 'org.spongepowered.plugin' version '0.6.0'
 }
 
-sourceCompatibility = '1.8'
-targetCompatibility = '1.8'
-
-group 'io.github.flibio'
-
-defaultTasks 'licenseFormat', 'clean', 'spotlessJavaCheck', 'build'
-
-repositories {
-    mavenCentral()
-    jcenter()
-    maven {
-        name 'Sponge API repo'
-        url 'http://repo.spongepowered.org/maven'
-    }
-    maven {
-        url "https://jitpack.io"
-    }
-}
+defaultTasks 'clean', 'build'
 
 dependencies {
-    compile 'org.spongepowered:spongeapi:4.1.0-SNAPSHOT'
+    compile 'org.spongepowered:spongeapi:' + project.spongeapi
 }
 
 spotless {
     java {
-        importOrderFile 'spotless.importorder'
-        eclipseFormatFile 'spotless.eclipseformat.xml'
+        importOrderFile 'gradle/spotless/order.importorder'
+        eclipseFormatFile 'gradle/spotless/eclipseformat.xml'
+        custom 'Long literal fix', { it.replaceAll('([0-9_]+) [Ll]', '$1L') }
     }
 }
 
 license {
-    ext.name = project.name
-    ext.owner = project.owner
-    ext.inceptionYear = project.inceptionYear
-    ext.currentYear = project.currentYear
-
-    header file('HEADER.txt')
-
-    sourceSets = project.sourceSets
-
-    ignoreFailures false
-    strictCheck true
-
-    mapping {
-        java = 'SLASHSTAR_STYLE'
+    ext {
+        name = project.name
+        organization = project.organization
+        url = project.url
+        inceptionYear = '2016'
+        currentYear = LocalDate.now().getYear();
     }
-}
 
-task wrapper(type: Wrapper) {
-    gradleVersion = '2.11'
+    header = file('gradle/HEADER.txt')
+    include '**/*.java'
 }
