@@ -1,7 +1,7 @@
-/*
+/**
  * This file is part of MinigameCore, licensed under the MIT License (MIT).
  *
- * Copyright (c) 2015 - 2016 Flibio
+ * Copyright (c) 2016 - 2016 MinigameCore
  * Copyright (c) Contributors
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -26,8 +26,10 @@ package io.github.flibio.minigamecore.arena;
 
 import io.github.flibio.minigamecore.events.ArenaStateChangeEvent;
 import org.spongepowered.api.Game;
+import org.spongepowered.api.Sponge;
 import org.spongepowered.api.data.key.Keys;
 import org.spongepowered.api.effect.sound.SoundType;
+import org.spongepowered.api.entity.Entity;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.event.Listener;
 import org.spongepowered.api.event.block.ChangeBlockEvent;
@@ -42,13 +44,14 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 public abstract class Arena {
 
     private ArrayList<ArenaState> arenaStates = new ArrayList<>(ArenaStates.ALL);
     private HashMap<ArenaState, Runnable> runnables = new HashMap<>();
 
-    private ArrayList<Player> onlinePlayers = new ArrayList<>();
+    protected ArrayList<UUID> onlinePlayers = new ArrayList<>();
     private ArenaState arenaState;
 
     private ArenaData arenaData;
@@ -91,7 +94,7 @@ public abstract class Arena {
      * 
      * @return All the players in the arena.
      */
-    public ArrayList<Player> getOnlinePlayers() {
+    public ArrayList<UUID> getOnlinePlayers() {
         return onlinePlayers;
     }
 
@@ -252,7 +255,7 @@ public abstract class Arena {
      * @param text The text to send.
      */
     public void broadcast(Text text) {
-        for (Player player : onlinePlayers) {
+        for (Player player : resolvePlayers(onlinePlayers)) {
             player.sendMessage(text);
         }
     }
@@ -265,9 +268,40 @@ public abstract class Arena {
      * @param pitch The pitch of the sound.
      */
     public void broadcastSound(SoundType type, int volume, int pitch) {
-        for (Player player : onlinePlayers) {
+        for (Player player : resolvePlayers(onlinePlayers)) {
             player.playSound(type, player.getLocation().getPosition(), volume, pitch);
         }
+    }
+
+    /**
+     * Converts a UUID to a player object.
+     * 
+     * @param uuid The UUID to convert.
+     * @return The player, if it was found.
+     */
+    public Optional<Player> resolvePlayer(UUID uuid) {
+        for (Player player : Sponge.getServer().getOnlinePlayers()) {
+            if (player.getUniqueId().equals(uuid)) {
+                return Optional.of(player);
+            }
+        }
+        return Optional.empty();
+    }
+
+    /**
+     * Resolves a list of UUID objects to players.
+     * 
+     * @param uuids The UUID list to resolve.
+     * @return The list of players.
+     */
+    public List<Player> resolvePlayers(List<UUID> uuids) {
+        List<Player> players = new ArrayList<>();
+        for (Player player : Sponge.getServer().getOnlinePlayers()) {
+            if (uuids.contains(player.getUniqueId())) {
+                players.add(player);
+            }
+        }
+        return players;
     }
 
     // Listeners
@@ -292,15 +326,20 @@ public abstract class Arena {
 
     @Listener
     public void onBlockModify(ChangeBlockEvent event, @First Player player) {
-        if (arenaData.getPreventBlockModify().contains(arenaState)) {
-            event.setCancelled(true);
+        if (event.getCause().root() instanceof Player) {
+            if (onlinePlayers.contains(player.getUniqueId()) && arenaData.getPreventBlockModify().contains(arenaState)) {
+                event.setCancelled(true);
+            }
         }
     }
 
     @Listener
-    public void onPlayerDamage(DamageEntityEvent event, @First Player player) {
-        if (arenaData.getPreventPlayerDamage().contains(arenaState)) {
-            event.setCancelled(true);
+    public void onPlayerDamage(DamageEntityEvent event) {
+        Entity entity = event.getTargetEntity();
+        if (entity instanceof Player) {
+            if (onlinePlayers.contains(((Player) entity).getUniqueId()) && arenaData.getPreventPlayerDamage().contains(arenaState)) {
+                event.setCancelled(true);
+            }
         }
     }
 

@@ -1,6 +1,18 @@
 language: java
+sudo: required
+dist: trusty
+
 jdk:
 - oraclejdk8
+- openjdk8
+notifications:
+  email: false
+  webhooks:
+    urls:
+      - https://webhooks.gitter.im/e/521b6e832a3e037f9fa2
+    on_success: change
+    on_failure: always
+    on_start: never
 install:   
 - mkdir travis-phantomjs   
 - wget https://s3.amazonaws.com/travis-phantomjs/phantomjs-2.0.0-ubuntu-12.04.tar.bz2 -O $PWD/travis-phantomjs/phantomjs-2.0.0-ubuntu-12.04.tar.bz2   

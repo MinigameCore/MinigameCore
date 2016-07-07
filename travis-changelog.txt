@@ -1,1 +1,1 @@
-- Added method to get all arenas from an `ArenaManager`
+- Fix modify event

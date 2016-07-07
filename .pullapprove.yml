@@ -1,0 +1,12 @@
+approve_by_comment: true
+approve_regex: '^Approved|approved|:+1:'
+reject_regex: '^Rejected|rejected|:-1:'
+reset_on_push: false
+reviewers:
+  members:
+  - Flibio
+  name: default
+  required: 1
+always_pending:
+    title_regex: '(WIP|wip)'
+    explanation: 'This PR is a work in progress...'
