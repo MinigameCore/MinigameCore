@@ -17,7 +17,7 @@ dependencies {
 spotless {
     java {
         importOrderFile 'gradle/spotless/order.importorder'
-        eclipseFormatFile 'gradle/spotless/eclipseformat.xml'
+        eclipseFormatFile 'gradle/spotless/formatter.xml'
         custom 'Long literal fix', { it.replaceAll('([0-9_]+) [Ll]', '$1L') }
     }
 }

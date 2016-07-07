@@ -1,7 +1,7 @@
-/*
+/**
  * This file is part of MinigameCore, licensed under the MIT License (MIT).
  *
- * Copyright (c) 2015 - 2016 Flibio
+ * Copyright (c) 2016 - 2016 ${owner}
  * Copyright (c) Contributors
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
