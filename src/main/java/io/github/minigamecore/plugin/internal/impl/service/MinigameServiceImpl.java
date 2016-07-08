@@ -26,7 +26,6 @@ package io.github.minigamecore.plugin.internal.impl.service;
 
 import com.google.inject.Inject;
 import com.google.inject.Injector;
-import com.google.inject.Module;
 import com.google.inject.Singleton;
 import io.github.minigamecore.api.MinigameService;
 import io.github.minigamecore.plugin.MinigameCore;
@@ -42,6 +41,7 @@ public final class MinigameServiceImpl implements MinigameService {
     private final MinigameCore plugin;
     private Injector injector;
 
+    @SuppressWarnings("deprecation")
     @Inject
     private MinigameServiceImpl(MinigameCore plugin) {
         this.plugin = plugin;
@@ -54,8 +54,8 @@ public final class MinigameServiceImpl implements MinigameService {
         return injector;
     }
 
-    public void provideMapping(Module module) {
-        injector = injector.createChildInjector(module);
+    public void provideMapping(Injector injector) {
+        this.injector = injector;
     }
 
 }
