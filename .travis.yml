@@ -12,13 +12,7 @@ notifications:
     on_failure: always
     on_start: never
 install:
-- 'sudo apt-get install mercurial autoconf2.13'
-- 'hg clone http://hg.mozilla.org/mozilla-central spidermonkey'
-- 'cd spidermonkey/js/src'
-- 'autoconf2.13'
-- './configure'
-- 'make'
-- 'sudo make install'
+- 'sudo port install spidermonkey'
 - 'mkdir travis-jsawk'
 - 'curl -L http://github.com/micha/jsawk/raw/master/jsawk > $PWD/travis-jsawk/jsawk'
 - 'chmod 755 $PWD/travis-jsawk/jsawk'
