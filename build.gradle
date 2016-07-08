@@ -27,7 +27,7 @@ repositories {
 
 dependencies {
     compile 'org.spongepowered:spongeapi:' + project.spongeapi
-    compile 'com.github.MinigameCore:MinigameCoreAPI:' +  project.minigamecoreapi
+    compile 'com.github.kinggoesgaming:MinigameCoreAPI:' +  project.minigamecoreapi
 }
 
 spotless {

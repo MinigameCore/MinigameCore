@@ -28,6 +28,9 @@ import static org.spongepowered.api.event.Order.EARLY;
 
 import com.google.inject.Inject;
 import com.google.inject.Injector;
+import com.google.inject.Singleton;
+import io.github.minigamecore.api.MinigameService;
+import io.github.minigamecore.plugin.internal.impl.service.MinigameServiceImpl;
 import org.slf4j.Logger;
 import org.spongepowered.api.config.ConfigDir;
 import org.spongepowered.api.event.Listener;
@@ -41,6 +44,7 @@ import java.nio.file.Path;
  * The main class for MinigameCore
  */
 @Plugin(authors = {"Flibio"}, id = "minigamecore", url = "http://minigamecore.github.io/docs/")
+@Singleton
 public final class MinigameCore {
 
     private final Path configDir;
@@ -56,15 +60,32 @@ public final class MinigameCore {
         this.pluginContainer = pluginContainer;
     }
 
+    /**
+     * @deprecated Do not access the event.
+     */
+    @Deprecated
     @Listener(order = EARLY) // Flexibility reasons
     public void onPreInitializationEarly(final GamePreInitializationEvent event) {
         getLogger().info("Starting " + getPluginContainer().getId());
+
+        Injector injector = defaultInjector.createChildInjector(binder -> {
+            binder.bind(MinigameService.class).to(MinigameServiceImpl.class);
+        });
+
+        ((MinigameServiceImpl) injector.getInstance(MinigameService.class)).provideMapping(injector);
     }
 
     public Path getConfigDir() {
         return configDir;
     }
 
+    /**
+     * @deprecated This is for initial use only.
+     * @see MinigameService#getInjector() This should be used instead.
+     *
+     * @return The initial {@link Injector}.
+     */
+    @Deprecated
     public Injector getDefaultInjector() {
         return defaultInjector;
     }
