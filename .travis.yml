@@ -13,7 +13,7 @@ notifications:
     on_start: never
 install:   
 - 'curl -L http://github.com/micha/jsawk/raw/master/jsawk > jsawk'
-- 'chmod 755 jsawk && mv jsawk ~/bin/'
+- 'chmod 755 jsawk && mv jsawk ${HOME}/bin/'
 script:
 - chmod +x ./gradlew
 after_success:
