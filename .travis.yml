@@ -21,7 +21,7 @@ after_success:
 - 'if [ ${TRAVIS_PULL_REQUEST} != "false" ]; then exit; fi'
 - 'if [ ${TRAVIS_BRANCH} != "master" ]; then exit; fi'
 - 'if [[ $(git log --format=%B -n 1 $TRAVIS_COMMIT) == *"[ci ignore]"* ]]; then exit; fi'
-- 'BUILD_NUMBER=$(curl "https://api.github.com/repos/minigamecore/minigamecore/tags" | jq ".name")'
+- 'BUILD_NUMBER=$(curl "https://api.github.com/repos/minigamecore/minigamecore/tags" | jq "[0].name")'
 - 'COMMIT_MESSAGE=$(curl "https://api.github.com/repos/minigamecore/minigamecore/commits/${TRAVIS_COMMIT}" | jq ".commit.message")'
 - 'mv ${HOME}/build/${TRAVIS_REPO_SLUG}/build/libs/MinigameCore-{all,${MGC_API}+${BUILD_NUMBER}}.jar'
 - 'curl -v -X POST -d "{\"tag\": \"${BUILD_NUMBER}\",\"message\": \"MinigameCore Build ${BUILD_NUMBER}\",\"object\": \"${TRAVIS_COMMIT}\",\"type\": \"commit\"}" --header "Content-Type:application/json" -u Flibio:${GITHUB_OAUTH} "https://api.github.com/repos/MinigameCore/MinigameCore/git/tags"'
