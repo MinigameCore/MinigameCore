@@ -17,6 +17,7 @@ install:
 - 'sudo cp jq /usr/bin'
 script:
 - chmod +x ./gradlew
+- gradle build
 after_success:
 - 'if [ ${TRAVIS_PULL_REQUEST} != "false" ]; then exit; fi'
 - 'if [ ${TRAVIS_BRANCH} != "master" ]; then exit; fi'
