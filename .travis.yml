@@ -21,6 +21,7 @@ after_success:
 - 'if [ ${TRAVIS_PULL_REQUEST} != "false" ]; then exit; fi'
 - 'if [ ${TRAVIS_BRANCH} != "master" ]; then exit; fi'
 - 'if [[ $(git log --format=%B -n 1 $TRAVIS_COMMIT) == *"[ci ignore]"* ]]; then exit; fi'
+- 'dir'
 - 'MGC_API=$(cat apiver.txt)'
 - 'echo ${MGC_API}'
 - 'BUILD_NUMBER=$(curl "https://api.github.com/repos/minigamecore/minigamecore/tags" | jq ".[0].name" | tr -d "\"")'

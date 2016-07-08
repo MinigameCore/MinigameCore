@@ -15,7 +15,7 @@ defaultTasks 'clean', 'build', 'shadowJar'
 build {
     logger.lifecycle('Setting API version to ' + project.minigamecoreapi)
     def apifile = new File('apiver.txt')
-	apifile.text = project.minigamecoreapi
+    apifile.text = project.minigamecoreapi
 }
 
 repositories {
