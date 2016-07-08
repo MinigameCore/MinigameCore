@@ -64,3 +64,7 @@ shadowJar {
         include(dependency('com.github.MinigameCore:MinigameCoreAPI'))
     }
 }
+
+task wrapper(type: Wrapper) {
+    gradleVersion = '2.2'
+}
