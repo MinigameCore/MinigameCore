@@ -12,21 +12,19 @@ notifications:
     on_failure: always
     on_start: never
 install:
-- 'sudo port install spidermonkey'
-- 'mkdir travis-jsawk'
-- 'curl -L http://github.com/micha/jsawk/raw/master/jsawk > $PWD/travis-jsawk/jsawk'
-- 'chmod 755 $PWD/travis-jsawk/jsawk'
-- 'export PATH=$PWD/travis-jsawk:$PATH'
+- 'wget http://stedolan.github.io/jq/download/linux64/jq'
+- 'chmod +x ./jq'
+- 'sudo cp jq /usr/bin'
 script:
 - chmod +x ./gradlew
 after_success:
 - 'if [ ${TRAVIS_PULL_REQUEST} != "false" ]; then exit; fi'
 - 'if [ ${TRAVIS_BRANCH} != "master" ]; then exit; fi'
 - 'if [[ $(git log --format=%B -n 1 $TRAVIS_COMMIT) == *"[ci ignore]"* ]]; then exit; fi'
-- 'BUILD_NUMBER=$(curl "https://api.github.com/repos/minigamecore/minigamecore/tags" | jsawk -a "return this.name")'
-- 'COMMIT_MESSAGE=$(curl "https://api.github.com/repos/minigamecore/minigamecore/commits/${TRAVIS_COMMIT}" | jsawk -a "return this.commit.message")'
+- 'BUILD_NUMBER=$(curl "https://api.github.com/repos/minigamecore/minigamecore/tags" | jq ".name")'
+- 'COMMIT_MESSAGE=$(curl "https://api.github.com/repos/minigamecore/minigamecore/commits/${TRAVIS_COMMIT}" | jq ".commit.message")'
 - 'mv ${HOME}/build/${TRAVIS_REPO_SLUG}/build/libs/MinigameCore-{all,${MGC_API}+${BUILD_NUMBER}}.jar'
 - 'curl -v -X POST -d "{\"tag\": \"${BUILD_NUMBER}\",\"message\": \"MinigameCore Build ${BUILD_NUMBER}\",\"object\": \"${TRAVIS_COMMIT}\",\"type\": \"commit\"}" --header "Content-Type:application/json" -u Flibio:${GITHUB_OAUTH} "https://api.github.com/repos/MinigameCore/MinigameCore/git/tags"'
 - 'curl -v -X POST -d "{\"ref\": \"refs/tags/${BUILD_NUMBER}\",\"sha\": \"${TRAVIS_COMMIT}\"}" --header "Content-Type:application/json" -u Flibio:${GITHUB_OAUTH} "https://api.github.com/repos/MinigameCore/MinigameCore/git/refs"'
 - 'curl -v -X POST -d "{\"tag_name\": \"${BUILD_NUMBER}\",\"target_commitish\": \"master\",\"name\": \"MinigameCore Build ${BUILD_NUMBER}\", \"body:\": \"${COMMIT_MESSAGE}\r\n**MinigameCore API:** ${MGC_API}\"}" --header "Content-Type:application/json" -u Flibio:${GITHUB_OAUTH} "https://api.github.com/repos/MinigameCore/MinigameCore/releases"'
-- 'curl -v -X POST --data-binary @${HOME}/build/${TRAVIS_REPO_SLUG}/build/libs/MinigameCore-${MGC_API}+${BUILD_NUMBER}.jar --header "Content-Type:application/octet-stream" -u Flibio:${GITHUB_OAUTH} "https://uploads.github.com/repos/MinigameCore/MinigameCore/releases/$(curl \"https://api.github.com/repos/minigamecore/minigamecore/releases/latest\" | jsawk -a \"return this.id\")/assets?name=MinigameCore-${MGC_API}+${BUILD_NUMBER}.jar"'
+- 'curl -v -X POST --data-binary @${HOME}/build/${TRAVIS_REPO_SLUG}/build/libs/MinigameCore-${MGC_API}+${BUILD_NUMBER}.jar --header "Content-Type:application/octet-stream" -u Flibio:${GITHUB_OAUTH} "https://uploads.github.com/repos/MinigameCore/MinigameCore/releases/$(curl \"https://api.github.com/repos/minigamecore/minigamecore/releases/latest\" | jq \".id\")/assets?name=MinigameCore-${MGC_API}+${BUILD_NUMBER}.jar"'
