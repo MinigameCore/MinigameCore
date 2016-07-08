@@ -12,6 +12,11 @@ plugins {
 
 defaultTasks 'clean', 'build', 'shadowJar'
 
+build {
+    logger.lifecycle('Setting API version to ' + project.minigamecoreapi)
+    System.setProperty "MGC_API", project.minigamecoreapi
+}
+
 repositories {
     maven {
         name 'JitPack'
@@ -21,7 +26,7 @@ repositories {
 
 dependencies {
     compile 'org.spongepowered:spongeapi:' + project.spongeapi
-    compile 'com.github.MinigameCore:MinigameCoreAPI:master-SNAPSHOT'
+    compile 'com.github.MinigameCore:MinigameCoreAPI:' +  project.minigamecoreapi
 }
 
 spotless {
@@ -51,6 +56,8 @@ spongestart {
 
 shadowJar {
     classifier 'all'
+	baseName 'MinigameCore'
+	version = null
     configurations = [project.configurations.compile]
     dependencies {
         include(dependency('com.github.MinigameCore:MinigameCoreAPI'))
