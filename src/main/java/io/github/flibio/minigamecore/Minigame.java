@@ -22,13 +22,13 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package io.github.minigamecore;
+package io.github.flibio.minigamecore;
 
 import io.github.minigamecore.arena.ArenaManager;
-import io.github.minigamecore.economy.EconomyManager;
-import io.github.minigamecore.kits.KitManager;
-import io.github.minigamecore.scoreboards.ScoreboardManager;
-import io.github.minigamecore.teams.TeamManager;
+import io.github.flibio.minigamecore.economy.EconomyManager;
+import io.github.flibio.minigamecore.kits.KitManager;
+import io.github.flibio.minigamecore.scoreboards.ScoreboardManager;
+import io.github.flibio.minigamecore.teams.TeamManager;
 import org.spongepowered.api.Game;
 import org.spongepowered.api.Sponge;
 
