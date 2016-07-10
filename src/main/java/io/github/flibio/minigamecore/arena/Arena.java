@@ -24,101 +24,124 @@
  */
 package io.github.flibio.minigamecore.arena;
 
-import io.github.flibio.minigamecore.events.ArenaStateChangeEvent;
+import com.google.common.cache.CacheBuilder;
+import com.google.common.cache.CacheLoader;
+import com.google.common.cache.LoadingCache;
+import io.github.minigamecore.api.arena.ArenaStage;
+import lombok.Getter;
+import lombok.Setter;
 import org.spongepowered.api.Game;
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.data.key.Keys;
 import org.spongepowered.api.effect.sound.SoundType;
 import org.spongepowered.api.entity.Entity;
 import org.spongepowered.api.entity.living.player.Player;
+import org.spongepowered.api.entity.living.player.User;
 import org.spongepowered.api.event.Listener;
 import org.spongepowered.api.event.block.ChangeBlockEvent;
 import org.spongepowered.api.event.data.ChangeDataHolderEvent;
 import org.spongepowered.api.event.entity.DamageEntityEvent;
 import org.spongepowered.api.event.filter.cause.First;
 import org.spongepowered.api.event.network.ClientConnectionEvent;
+import org.spongepowered.api.plugin.PluginContainer;
+import org.spongepowered.api.service.user.UserStorageService;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.channel.MessageChannel;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.concurrent.TimeUnit;
 
 public abstract class Arena {
 
-    private ArrayList<ArenaState> arenaStates = new ArrayList<>(ArenaStates.ALL);
-    private HashMap<ArenaState, Runnable> runnables = new HashMap<>();
+    @Getter
+    /**
+     * The {@link ArenaStage}s.
+     *
+     * @returns The arena stages
+     */
+    private List<ArenaStage> arenaStages = new ArrayList<>();
 
+    @Getter
+    /**
+     * Gets all of the players in an arena.
+     *
+     * @return All the players in the arena
+     */
     protected ArrayList<UUID> onlinePlayers = new ArrayList<>();
-    private ArenaState arenaState;
 
+    @Getter
+    /**
+     * The current {@link ArenaStage}.
+     *
+     * @returns The current arena stage
+     */
+    private ArenaStage currentStage;
+
+    @Getter
+    @Setter
+    /**
+     * The {@link ArenaData}.
+     *
+     * @params arenaData The overriding {@link ArenaData}
+     * @returns The arena data
+     */
     private ArenaData arenaData;
 
+    @Getter
+    /**
+     * The {@link Game}.
+     *
+     * @returns The game
+     */
     private Game game;
-    private Object plugin;
+
+    @Getter
+    /**
+     * The {@link PluginContainer}.
+     *
+     * @returns The plugin
+     */
+    private PluginContainer plugin;
 
     /**
      * Creates a new Arena.
-     * 
-     * @param arenaName The name of the arena.
-     * @param game An instance of the game.
-     * @param plugin An instance of the main class of the plugin.
+     *
+     * @param arenaName The name of the arena
+     * @param game An instance of the game
+     * @param plugin An instance of the main class of the plugin
+     * @param stages All arena stages, in order of execution
      */
-    public Arena(String arenaName, Game game, Object plugin) {
+    public Arena(String arenaName, Game game, PluginContainer plugin, List<ArenaStage> stages) {
         this.arenaData = new ArenaData(arenaName);
         this.game = game;
         this.plugin = plugin;
-        this.arenaState = ArenaStates.LOBBY_WAITING;
+        this.arenaStages = stages;
 
         game.getEventManager().registerListeners(plugin, this);
     }
 
     /**
      * Adds an online player.
-     * 
-     * @param player The player to add.
+     *
+     * @param player The player to add
      */
     public abstract void addOnlinePlayer(Player player);
 
     /**
      * Removes an online player.
-     * 
-     * @param player The player to remove.
+     *
+     * @param player The player to remove
      */
     public abstract void removeOnlinePlayer(Player player);
-
-    /**
-     * Gets all of the players in an arena.
-     * 
-     * @return All the players in the arena.
-     */
-    public ArrayList<UUID> getOnlinePlayers() {
-        return onlinePlayers;
-    }
-
-    /**
-     * Calls a state change on the arena.
-     * 
-     * @param newState The {@link ArenaState} to change the arena to.
-     */
-    public void arenaStateChange(ArenaState newState) {
-        if (!arenaStates.contains(newState)) {
-            return;
-        }
-        arenaState = newState;
-        game.getEventManager().post(new ArenaStateChangeEvent(this, plugin));
-        if (arenaStateRunnableExists(newState)) {
-            runnables.get(newState).run();
-        }
-    }
 
     // Other Arena Properties
 
     /**
      * Gets the {@link ArenaData}.
-     * 
+     *
      * @return The {@link ArenaData}.
      */
     public ArenaData getData() {
@@ -127,131 +150,26 @@ public abstract class Arena {
 
     /**
      * Overrides the current {@link ArenaData}.
-     * 
+     *
      * @param data The {@link ArenaData} that will override the current
-     *        {@link ArenaData}.
+     * {@link ArenaData}.
      */
     public void overrideData(ArenaData data) {
         arenaData = data;
     }
 
     /**
-     * Gets the current {@link ArenaState}.
-     * 
-     * @return The current {@link ArenaState}.
+     * Gets all of the {@link ArenaStage}s registered with this arena.
+     *
+     * @return All of the {@link ArenaStage}s registered with this arena.
      */
-    public ArenaState getCurrentState() {
-        return arenaState;
-    }
-
-    /**
-     * Adds a new {@link ArenaState}.
-     * 
-     * @param state The {@link ArenaState} to add.
-     * @return If the {@link ArenaState} was successfully added.
-     */
-    public boolean addArenaState(ArenaState state) {
-        if (arenaStateExists(state)) {
-            return false;
-        } else {
-            arenaStates.add(state);
-            return true;
-        }
-    }
-
-    /**
-     * Removes an {@link ArenaState}.
-     * 
-     * @param state The {@link ArenaState} to remove.
-     * @return If the {@link ArenaState} was successfully removed.
-     */
-    public boolean removeArenaState(ArenaState state) {
-        if (ArenaStates.ALL.contains(state) || !arenaStateExists(state)) {
-            return false;
-        } else {
-            if (runnables.keySet().contains(state)) {
-                runnables.remove(state);
-            }
-            arenaStates.remove(state);
-            return true;
-        }
-    }
-
-    /**
-     * Checks if an {@link ArenaState} exists.
-     * 
-     * @param arenaState The {@link ArenaState} to check for.
-     * @return If the {@link ArenaState} exists.
-     */
-    public boolean arenaStateExists(ArenaState arenaState) {
-        return arenaStates.contains(arenaState);
-    }
-
-    /**
-     * Gets all of the {@link ArenaState}s registered with this arena.
-     * 
-     * @return All of the {@link ArenaState}s registered with this arena.
-     */
-    public List<ArenaState> getArenaStates() {
-        return arenaStates;
-    }
-
-    /**
-     * Adds an {@link ArenaState} runnable.
-     * 
-     * @param state The {@link ArenaState} to add.
-     * @param runnable The runnable to add.
-     * @return If the method was successful or not.
-     */
-    public boolean addArenaStateRunnable(ArenaState state, Runnable runnable) {
-        if (!arenaStateExists(state) || arenaStateRunnableExists(state)) {
-            return false;
-        }
-        runnables.put(state, runnable);
-        return true;
-    }
-
-    /**
-     * Removes an {@link ArenaState} runnable.
-     * 
-     * @param state The {@link ArenaState} to remove.
-     * @return If the {@link ArenaState} was successfully removed.
-     */
-    public boolean removeArenaStateRunnable(ArenaState state) {
-        if (!arenaStateExists(state) || !arenaStateRunnableExists(state)) {
-            return false;
-        }
-        runnables.remove(state);
-        return true;
-    }
-
-    /**
-     * Checks if an {@link ArenaState} runnable exists.
-     * 
-     * @param state The {@link ArenaState} to check for.
-     * @return If the {@link ArenaState} runnable exists.
-     */
-    public boolean arenaStateRunnableExists(ArenaState state) {
-        return runnables.keySet().contains(state);
-    }
-
-    /**
-     * Gets an {@link ArenaState} runnable.
-     * 
-     * @param state The {@link ArenaState} to get the runnable of.
-     * @return The {@link ArenaState} runnable.
-     */
-    public Optional<Runnable> getArenaStateRunnable(ArenaState state) {
-        if (arenaStateRunnableExists(state)) {
-            return Optional.of(runnables.get(state));
-        } else {
-            return Optional.empty();
-        }
+    public List<ArenaStage> getArenaStages() {
+        return arenaStages;
     }
 
     /**
      * Sends a message to each player.
-     * 
+     *
      * @param text The text to send.
      */
     public void broadcast(Text text) {
@@ -262,7 +180,7 @@ public abstract class Arena {
 
     /**
      * Plays a sound to all players in the game.
-     * 
+     *
      * @param type The type of sound to play.
      * @param volume The volume of the sound.
      * @param pitch The pitch of the sound.
@@ -273,24 +191,34 @@ public abstract class Arena {
         }
     }
 
-    /**
-     * Converts a UUID to a player object.
-     * 
-     * @param uuid The UUID to convert.
-     * @return The player, if it was found.
-     */
-    public Optional<Player> resolvePlayer(UUID uuid) {
-        for (Player player : Sponge.getServer().getOnlinePlayers()) {
-            if (player.getUniqueId().equals(uuid)) {
-                return Optional.of(player);
-            }
-        }
-        return Optional.empty();
-    }
+    private final LoadingCache<UUID, Player> playerCache = CacheBuilder.newBuilder().expireAfterAccess(10, TimeUnit.MINUTES).build(
+            new CacheLoader<UUID, Player>() {
+
+                Optional<UserStorageService> userStorageServiceOptional = game.getServiceManager().provide(UserStorageService.class);
+
+                @Override public Player load(UUID key) throws Exception {
+                    if (userStorageServiceOptional.isPresent()) {
+                        UserStorageService storageService = userStorageServiceOptional.get();
+                        if (storageService.get(key).isPresent()) {
+                            User user = storageService.get(key).get();
+                            if (user.getPlayer().isPresent()) {
+                                return user.getPlayer().get();
+                            } else {
+                                throw new Exception("Player was not present. " + key + " has never played on this server before.");
+                            }
+                        } else {
+                            throw new Exception(key + " is not a player.");
+                        }
+                    } else {
+                        throw new Exception("UserStorageService is unavailable.");
+                    }
+                }
+            });
+
 
     /**
      * Resolves a list of UUID objects to players.
-     * 
+     *
      * @param uuids The UUID list to resolve.
      * @return The list of players.
      */
@@ -327,7 +255,7 @@ public abstract class Arena {
     @Listener
     public void onBlockModify(ChangeBlockEvent event, @First Player player) {
         if (event.getCause().root() instanceof Player) {
-            if (onlinePlayers.contains(player.getUniqueId()) && arenaData.getPreventBlockModify().contains(arenaState)) {
+            if (onlinePlayers.contains(player.getUniqueId()) && arenaData.getPreventBlockModify().contains(getCurrentStage().getId())) {
                 event.setCancelled(true);
             }
         }
@@ -337,7 +265,7 @@ public abstract class Arena {
     public void onPlayerDamage(DamageEntityEvent event) {
         Entity entity = event.getTargetEntity();
         if (entity instanceof Player) {
-            if (onlinePlayers.contains(((Player) entity).getUniqueId()) && arenaData.getPreventPlayerDamage().contains(arenaState)) {
+            if (onlinePlayers.contains(((Player) entity).getUniqueId()) && arenaData.getPreventPlayerDamage().contains(getCurrentStage().getId())) {
                 event.setCancelled(true);
             }
         }
@@ -345,7 +273,7 @@ public abstract class Arena {
 
     @Listener
     public void onHungerChange(ChangeDataHolderEvent.ValueChange event) {
-        if (arenaData.getPreventHungerLoss().contains(arenaState)) {
+        if (arenaData.getPreventHungerLoss().contains(getCurrentStage().getId())) {
             event.getEndResult().getReplacedData().forEach(iv -> {
                 if (iv.getKey().equals(Keys.FOOD_LEVEL)) {
                     event.setCancelled(true);

@@ -29,6 +29,7 @@ repositories {
 }
 
 dependencies {
+    compile group: 'com.google.guava', name: 'guava', version: '19.0'
     compile 'org.spongepowered:spongeapi:' + project.spongeapi
     compile project(':MinigameCoreAPI')
 }
@@ -65,5 +66,6 @@ shadowJar {
     configurations = [project.configurations.compile]
     dependencies {
         include(dependency('io.github.minigamecore:MinigameCoreAPI'))
+        include(dependency('com.google.guava:guava'))
     }
 }
