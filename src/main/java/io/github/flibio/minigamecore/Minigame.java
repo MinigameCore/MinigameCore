@@ -24,7 +24,7 @@
  */
 package io.github.flibio.minigamecore;
 
-import io.github.flibio.minigamecore.arena.ArenaManager;
+import io.github.minigamecore.arena.ArenaManager;
 import io.github.flibio.minigamecore.economy.EconomyManager;
 import io.github.flibio.minigamecore.kits.KitManager;
 import io.github.flibio.minigamecore.scoreboards.ScoreboardManager;

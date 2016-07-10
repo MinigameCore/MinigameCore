@@ -65,5 +65,6 @@ shadowJar {
     configurations = [project.configurations.compile]
     dependencies {
         include(dependency('io.github.minigamecore:MinigameCoreAPI'))
+        include(dependency('com.google.guava:guava'))
     }
 }
