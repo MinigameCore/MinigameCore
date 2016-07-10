@@ -22,11 +22,11 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package io.github.flibio.minigamecore.teams;
+package io.github.minigamecore.kits;
 
-public class TeamManager {
+public class KitManager {
 
-    public TeamManager() {
+    public KitManager() {
         // TODO
     }
 

@@ -22,7 +22,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package io.github.flibio.minigamecore.arena;
+package io.github.minigamecore.arena;
 
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.world.Location;

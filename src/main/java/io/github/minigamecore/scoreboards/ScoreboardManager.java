@@ -22,39 +22,12 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package io.github.flibio.minigamecore.events;
+package io.github.minigamecore.scoreboards;
 
-import io.github.flibio.minigamecore.arena.Arena;
-import org.spongepowered.api.event.cause.Cause;
-import org.spongepowered.api.event.cause.NamedCause;
-import org.spongepowered.api.event.impl.AbstractEvent;
+public class ScoreboardManager {
 
-public class ArenaStateChangeEvent extends AbstractEvent {
-
-    private Arena arena;
-    private Object plugin;
-
-    /**
-     * Called when an arena changes its state.
-     * 
-     * @param arena The arena whose state changed.
-     */
-    public ArenaStateChangeEvent(Arena arena, Object plugin) {
-        this.arena = arena;
-    }
-
-    /**
-     * Gets whichever arena's state changed.
-     * 
-     * @return The arena whose state changed.
-     */
-    public Arena getArena() {
-        return this.arena;
-    }
-
-    @Override
-    public Cause getCause() {
-        return Cause.of(NamedCause.of("MinigameCore", plugin));
+    public ScoreboardManager() {
+        // TODO
     }
 
 }
