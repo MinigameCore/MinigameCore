@@ -31,7 +31,6 @@ import io.github.minigamecore.api.arena.ArenaStage;
 import lombok.Getter;
 import lombok.Setter;
 import org.spongepowered.api.Game;
-import org.spongepowered.api.Sponge;
 import org.spongepowered.api.data.key.Keys;
 import org.spongepowered.api.effect.sound.SoundType;
 import org.spongepowered.api.entity.Entity;
@@ -52,9 +51,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 
-public abstract class Arena {
+public abstract class Arena implements io.github.minigamecore.api.arena.Arena {
 
     @Getter
     /**
@@ -63,6 +63,8 @@ public abstract class Arena {
      * @returns The arena stages
      */
     private List<ArenaStage> arenaStages = new ArrayList<>();
+
+    private int currentStagePos = 0;
 
     @Getter
     /**
@@ -122,20 +124,6 @@ public abstract class Arena {
 
         game.getEventManager().registerListeners(plugin, this);
     }
-
-    /**
-     * Adds an online player.
-     *
-     * @param player The player to add
-     */
-    public abstract void addOnlinePlayer(Player player);
-
-    /**
-     * Removes an online player.
-     *
-     * @param player The player to remove
-     */
-    public abstract void removeOnlinePlayer(Player player);
 
     // Other Arena Properties
 
@@ -217,16 +205,18 @@ public abstract class Arena {
 
 
     /**
-     * Resolves a list of UUID objects to players.
+     * Resolves a list of UUID objects to players. Be sure to check that all players are there, as not all players may be present.
      *
-     * @param uuids The UUID list to resolve.
-     * @return The list of players.
+     * @param uuids The UUID list to resolve
+     * @return The list of players
      */
     public List<Player> resolvePlayers(List<UUID> uuids) {
         List<Player> players = new ArrayList<>();
-        for (Player player : Sponge.getServer().getOnlinePlayers()) {
-            if (uuids.contains(player.getUniqueId())) {
-                players.add(player);
+        for (UUID id : uuids) {
+            try {
+                players.add(playerCache.get(id));
+            } catch (ExecutionException e) {
+                plugin.getLogger().debug("A player by the UUID " + id.toString() + " could not be found.", e);
             }
         }
         return players;
@@ -238,7 +228,7 @@ public abstract class Arena {
     public void onPlayerDisconnect(ClientConnectionEvent.Disconnect event) {
         if (arenaData.isTriggerPlayerEvents()) {
             Player player = event.getTargetEntity();
-            removeOnlinePlayer(player);
+            removePlayer(player);
             event.setChannel(MessageChannel.TO_NONE);
         }
     }
@@ -247,7 +237,7 @@ public abstract class Arena {
     public void onPlayerJoin(ClientConnectionEvent.Join event) {
         if (arenaData.isTriggerPlayerEvents()) {
             Player player = event.getTargetEntity();
-            addOnlinePlayer(player);
+            addPlayer(player);
             event.setChannel(MessageChannel.TO_NONE);
         }
     }
@@ -281,4 +271,19 @@ public abstract class Arena {
             });
         }
     }
+
+    @Override public List<UUID> getPlayers() {
+        return getPlayers();
+    }
+
+    @Override public void next() {
+        if (getArenaStages().get(++currentStagePos) != null) {
+            currentStage = getArenaStages().get(currentStagePos);
+            currentStage.run();
+        } else {
+            // EVERYTHING'S OVER, DELETE SYSTEM 32
+        }
+    }
+
+
 }
