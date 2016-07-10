@@ -29,7 +29,6 @@ repositories {
 }
 
 dependencies {
-    compile group: 'com.google.guava', name: 'guava', version: '19.0'
     compile 'org.spongepowered:spongeapi:' + project.spongeapi
     compile project(':MinigameCoreAPI')
 }
