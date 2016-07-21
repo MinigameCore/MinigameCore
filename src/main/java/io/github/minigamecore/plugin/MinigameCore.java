@@ -25,10 +25,14 @@
 
 package io.github.minigamecore.plugin;
 
+import static org.spongepowered.api.Sponge.getServiceManager;
 import static org.spongepowered.api.event.Order.EARLY;
 
 import com.google.inject.Inject;
 import com.google.inject.Injector;
+import com.google.inject.Module;
+import io.github.minigamecore.api.MinigameService;
+import io.github.minigamecore.plugin.service.MinigameServiceImpl;
 import org.slf4j.Logger;
 import org.spongepowered.api.config.ConfigDir;
 import org.spongepowered.api.event.Listener;
@@ -45,7 +49,7 @@ import java.nio.file.Path;
 public final class MinigameCore {
 
     private final Path configDir;
-    private final Injector defaultInjector;
+    private Injector defaultInjector;
     private final Logger logger;
     private final PluginContainer pluginContainer;
 
@@ -57,15 +61,30 @@ public final class MinigameCore {
         this.pluginContainer = pluginContainer;
     }
 
-    @Listener(order = EARLY) // Flexibility reasons
+    @Listener(order = EARLY)
     public void onPreInitializationEarly(final GamePreInitializationEvent event) {
         getLogger().info("Starting " + getPluginContainer().getId());
+
+        // Setup minigameservice
+        Module module = binder -> binder.bind(MinigameService.class).to(MinigameServiceImpl.class);
+        defaultInjector = defaultInjector.createChildInjector(module);
+        getServiceManager().setProvider(this, MinigameService.class, defaultInjector.getInstance(MinigameService.class));
     }
 
     public Path getConfigDir() {
         return configDir;
     }
 
+    /**
+     * @deprecated Only used for initial injector setup.
+     *
+     * <p>
+     *     Use {@link MinigameService#getInjector()} instead
+     * </p>
+     *
+     * @see MinigameService#getInjector()
+     */
+    @Deprecated
     public Injector getDefaultInjector() {
         return defaultInjector;
     }
