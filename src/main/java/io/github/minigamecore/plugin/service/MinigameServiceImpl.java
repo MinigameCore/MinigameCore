@@ -50,7 +50,6 @@ public final class MinigameServiceImpl implements MinigameService {
     @Inject
     private MinigameServiceImpl(MinigameCore plugin) {
         logger = plugin.getLogger();
-        injector = plugin.getDefaultInjector();
     }
 
     @Nonnull

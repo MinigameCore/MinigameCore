@@ -75,20 +75,6 @@ public final class MinigameCore {
         return configDir;
     }
 
-    /**
-     * @deprecated Only used for initial injector setup.
-     *
-     * <p>
-     *     Use {@link MinigameService#getInjector()} instead
-     * </p>
-     *
-     * @see MinigameService#getInjector()
-     */
-    @Deprecated
-    public Injector getDefaultInjector() {
-        return defaultInjector;
-    }
-
     public Logger getLogger() {
         return logger;
     }
