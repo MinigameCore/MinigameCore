@@ -40,7 +40,7 @@ import javax.annotation.Nonnull;
 /*
  * The implementation for MinigameService.
  */
-@Singleton // Only once instance should be available
+@Singleton // Only one instance should be available
 public final class MinigameServiceImpl implements MinigameService {
 
     private final Logger logger; // TODO Will work on this when we get some configuration stuff done
