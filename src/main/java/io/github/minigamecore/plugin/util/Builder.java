@@ -26,10 +26,7 @@
 package io.github.minigamecore.plugin.util;
 
 import static org.spongepowered.api.Sponge.getRegistry;
-import static org.spongepowered.api.Sponge.getServiceManager;
 
-import com.google.inject.Injector;
-import io.github.minigamecore.api.MinigameService;
 import io.github.minigamecore.api.spawnpoint.ImmutableSpawnpoint;
 import io.github.minigamecore.plugin.spawnpoint.ImmutableSpawnpointImpl;
 import org.spongepowered.api.util.ResettableBuilder;
@@ -46,7 +43,6 @@ public final class Builder {
     private static final Map<Class, Supplier> builderMap = new HashMap<>();
 
     static {
-        Injector injector = getServiceManager().provideUnchecked(MinigameService.class).getInjector();
         registerBuilder(ImmutableSpawnpoint.Builder.class, ImmutableSpawnpointImpl.BuilderImpl::new);
     }
 
