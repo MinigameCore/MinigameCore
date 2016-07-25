@@ -27,6 +27,7 @@ package io.github.minigamecore.plugin.spawnpoint;
 
 import static com.google.common.base.Objects.toStringHelper;
 import static com.google.common.base.Preconditions.checkNotNull;
+import static com.google.common.collect.ImmutableList.copyOf;
 
 import com.google.common.base.Objects;
 import io.github.minigamecore.api.spawnpoint.ImmutableSpawnpoint;
@@ -62,11 +63,6 @@ public class ImmutableSpawnpointImpl implements ImmutableSpawnpoint {
         this.uuid = uuid;
     }
 
-    @Nonnull
-    @Override
-    public Spawnpoint asMutable() {
-        return null;
-    }
 
     @Nonnull
     @Override
@@ -83,7 +79,7 @@ public class ImmutableSpawnpointImpl implements ImmutableSpawnpoint {
     @Nonnull
     @Override
     public Collection<Team> getTeams() {
-        return teams;
+        return copyOf(teams);
     }
 
     public boolean isActive() {
@@ -109,6 +105,12 @@ public class ImmutableSpawnpointImpl implements ImmutableSpawnpoint {
                 .add("transform", transform)
                 .add("uuid", uuid)
                 .toString();
+    }
+
+    @Nonnull
+    @Override
+    public Spawnpoint<? extends Extent> asMutable() {
+        return new SpawnpointImpl<>(active, spawnpointType, teams, transform, uuid);
     }
 
     /*
