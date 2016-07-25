@@ -47,7 +47,7 @@ public final class Builder {
 
     static {
         Injector injector = getServiceManager().provideUnchecked(MinigameService.class).getInjector();
-        registerBuilder(ImmutableSpawnpoint.Builder.class, () -> injector.getInstance(ImmutableSpawnpointImpl.BuilderImpl.class));
+        registerBuilder(ImmutableSpawnpoint.Builder.class, ImmutableSpawnpointImpl.BuilderImpl::new);
     }
 
     private Builder() {

@@ -29,12 +29,9 @@ import static com.google.common.base.Objects.toStringHelper;
 import static com.google.common.base.Preconditions.checkNotNull;
 
 import com.google.common.base.Objects;
-import com.google.inject.Inject;
 import io.github.minigamecore.api.spawnpoint.ImmutableSpawnpoint;
 import io.github.minigamecore.api.spawnpoint.Spawnpoint;
 import io.github.minigamecore.api.spawnpoint.spawnpointtype.SpawnpointType;
-import io.github.minigamecore.plugin.MinigameCore;
-import org.slf4j.Logger;
 import org.spongepowered.api.entity.Transform;
 import org.spongepowered.api.scoreboard.Team;
 import org.spongepowered.api.world.extent.Extent;
@@ -50,16 +47,14 @@ import javax.annotation.Nonnull;
  */
 public class ImmutableSpawnpointImpl implements ImmutableSpawnpoint {
 
-    private final Logger logger;
     private final UUID uuid;
     private final boolean active;
     private final SpawnpointType spawnpointType;
     private final Collection<Team> teams;
     private final Transform<? extends Extent> transform;
 
-    private ImmutableSpawnpointImpl(Logger logger, boolean active, SpawnpointType spawnpointType, Collection<Team> teams,
+    ImmutableSpawnpointImpl(boolean active, SpawnpointType spawnpointType, Collection<Team> teams,
             Transform<? extends Extent> transform, UUID uuid) {
-        this.logger = logger;
         this.active = active;
         this.spawnpointType = spawnpointType;
         this.teams = teams;
@@ -102,7 +97,7 @@ public class ImmutableSpawnpointImpl implements ImmutableSpawnpoint {
 
     @Override
     public int hashCode() {
-        return Objects.hashCode(logger, active, spawnpointType, teams, transform, uuid);
+        return Objects.hashCode(active, spawnpointType, teams, transform, uuid);
     }
 
     @Override
@@ -119,19 +114,13 @@ public class ImmutableSpawnpointImpl implements ImmutableSpawnpoint {
     /*
      * Implementation of ImmutableSpawnpoint.Builder.
      */
-    public class BuilderImpl implements Builder {
+    public static class BuilderImpl implements Builder {
 
-        private final Logger logger;
         private boolean active = false;
         private SpawnpointType spawnpointType = null;
         private Transform<? extends Extent> transform = null;
         private UUID uuid = UUID.randomUUID();
         private Collection<Team> teams = new ArrayList<>();
-
-        @Inject
-        private BuilderImpl(MinigameCore plugin) {
-            this.logger = plugin.getLogger();
-        }
 
         @Override
         public BuilderImpl active(boolean active) {
@@ -154,7 +143,7 @@ public class ImmutableSpawnpointImpl implements ImmutableSpawnpoint {
                 throw new IllegalArgumentException(e);
             }
 
-            return new ImmutableSpawnpointImpl(logger, active, spawnpointType, teams, transform, uuid);
+            return new ImmutableSpawnpointImpl(active, spawnpointType, teams, transform, uuid);
         }
 
         @Override
@@ -222,7 +211,7 @@ public class ImmutableSpawnpointImpl implements ImmutableSpawnpoint {
 
         @Override
         public int hashCode() {
-            return Objects.hashCode(logger, active, spawnpointType, transform);
+            return Objects.hashCode(active, spawnpointType, transform);
         }
 
         @Override
