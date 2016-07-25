@@ -36,9 +36,9 @@ import java.util.Map;
 import java.util.function.Supplier;
 
 /*
- *
+ * Builders registration helper class
  */
-public final class Builder {
+public final class Builders {
 
     private static final Map<Class, Supplier> builderMap = new HashMap<>();
 
@@ -46,7 +46,7 @@ public final class Builder {
         registerBuilder(ImmutableSpawnpoint.Builder.class, ImmutableSpawnpointImpl.BuilderImpl::new);
     }
 
-    private Builder() {
+    private Builders() {
     }
 
     private static <R extends ResettableBuilder> void registerBuilder(Class<R> clazz, Supplier<? extends R> supplier) {

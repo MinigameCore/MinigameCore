@@ -25,7 +25,7 @@
 
 package io.github.minigamecore.plugin;
 
-import static io.github.minigamecore.plugin.util.Builder.registerBuilders;
+import static io.github.minigamecore.plugin.util.Builders.registerBuilders;
 import static org.spongepowered.api.Sponge.getServiceManager;
 import static org.spongepowered.api.event.Order.EARLY;
 

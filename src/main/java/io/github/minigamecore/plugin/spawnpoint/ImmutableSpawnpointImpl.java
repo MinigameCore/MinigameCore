@@ -112,7 +112,7 @@ public class ImmutableSpawnpointImpl implements ImmutableSpawnpoint {
     }
 
     /*
-     * Implementation of ImmutableSpawnpoint.Builder.
+     * Implementation of ImmutableSpawnpoint.Builders.
      */
     public static class BuilderImpl implements Builder {
 
