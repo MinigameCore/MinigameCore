@@ -26,6 +26,7 @@
 package io.github.minigamecore.plugin;
 
 import static io.github.minigamecore.plugin.util.Builders.registerBuilders;
+import static io.github.minigamecore.plugin.util.TypeSerializers.registerSerializers;
 import static org.spongepowered.api.Sponge.getServiceManager;
 import static org.spongepowered.api.event.Order.EARLY;
 
@@ -73,6 +74,9 @@ public final class MinigameCore {
 
         // Register Builders
         registerBuilders();
+
+        // Register global TypeSerializers
+        registerSerializers();
     }
 
     public Path getConfigDir() {
