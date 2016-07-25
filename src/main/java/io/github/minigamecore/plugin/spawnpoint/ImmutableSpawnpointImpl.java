@@ -45,8 +45,8 @@ import java.util.UUID;
 
 import javax.annotation.Nonnull;
 
-/**
- * Implementation of {@link ImmutableSpawnpoint}.
+/*
+ * Implementation of ImmutableSpawnpoint.
  */
 public class ImmutableSpawnpointImpl implements ImmutableSpawnpoint {
 
@@ -57,7 +57,8 @@ public class ImmutableSpawnpointImpl implements ImmutableSpawnpoint {
     private final Collection<Team> teams;
     private final Transform<? extends Extent> transform;
 
-    private ImmutableSpawnpointImpl(Logger logger, boolean active, SpawnpointType spawnpointType, Collection<Team> teams, Transform<? extends Extent> transform, UUID uuid) {
+    private ImmutableSpawnpointImpl(Logger logger, boolean active, SpawnpointType spawnpointType, Collection<Team> teams,
+            Transform<? extends Extent> transform, UUID uuid) {
         this.logger = logger;
         this.active = active;
         this.spawnpointType = spawnpointType;
@@ -115,8 +116,8 @@ public class ImmutableSpawnpointImpl implements ImmutableSpawnpoint {
                 .toString();
     }
 
-    /**
-     * Implementation of {@link Builder}.
+    /*
+     * Implementation of ImmutableSpawnpoint.Builder.
      */
     public class BuilderImpl implements Builder {
 
