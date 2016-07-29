@@ -25,6 +25,8 @@
 
 package io.github.minigamecore.plugin;
 
+import static io.github.minigamecore.plugin.util.Builders.registerBuilders;
+import static io.github.minigamecore.plugin.util.TypeSerializers.registerSerializers;
 import static org.spongepowered.api.Sponge.getServiceManager;
 import static org.spongepowered.api.event.Order.EARLY;
 
@@ -69,6 +71,12 @@ public final class MinigameCore {
         Module module = binder -> binder.bind(MinigameService.class).to(MinigameServiceImpl.class);
         defaultInjector = defaultInjector.createChildInjector(module);
         getServiceManager().setProvider(this, MinigameService.class, defaultInjector.getInstance(MinigameService.class));
+
+        // Register Builders
+        registerBuilders();
+
+        // Register global TypeSerializers
+        registerSerializers();
     }
 
     public Path getConfigDir() {

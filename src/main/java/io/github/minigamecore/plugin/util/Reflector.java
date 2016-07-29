@@ -38,7 +38,7 @@ import javax.annotation.Nullable;
 /*
  * Reflection helper class.
  */
-public final class Reflection {
+public final class Reflector {
 
     private static final Logger LOGGER = LoggerFactory.getLogger("minigamecore|reflect");
     private static Field MODIFIER_FIELD;
@@ -52,7 +52,7 @@ public final class Reflection {
         }
     }
 
-    private Reflection() {
+    private Reflector() {
     }
 
     public static void setAssessible(Field field, boolean assessible) {
