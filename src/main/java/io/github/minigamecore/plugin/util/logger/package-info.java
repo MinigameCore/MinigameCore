@@ -23,4 +23,7 @@
  * THE SOFTWARE.
  */
 
-package io.github.minigamecore.plugin.config.annotations;
+@ParametersAreNonnullByDefault
+package io.github.minigamecore.plugin.util.logger;
+
+import javax.annotation.ParametersAreNonnullByDefault;

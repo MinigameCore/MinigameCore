@@ -23,4 +23,26 @@
  * THE SOFTWARE.
  */
 
-package io.github.minigamecore.plugin.config.annotations;
+package io.github.minigamecore.plugin.util.logger.annotations;
+
+import static java.lang.annotation.ElementType.FIELD;
+import static java.lang.annotation.ElementType.PARAMETER;
+import static java.lang.annotation.RetentionPolicy.RUNTIME;
+
+import com.google.inject.BindingAnnotation;
+import io.github.minigamecore.plugin.util.logger.MinigameCoreLogger;
+
+import java.lang.annotation.Documented;
+import java.lang.annotation.Retention;
+import java.lang.annotation.Target;
+
+/**
+ * Binding annotation for {@link MinigameCoreLogger} with no suffix.
+ */
+@BindingAnnotation
+@Documented
+@Retention(RUNTIME)
+@Target({FIELD, PARAMETER})
+public @interface MinigameCoreLog {
+
+}

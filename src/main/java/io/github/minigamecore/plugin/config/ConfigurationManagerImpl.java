@@ -28,9 +28,10 @@ package io.github.minigamecore.plugin.config;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static org.spongepowered.api.Sponge.getPluginManager;
 
-import com.google.inject.Singleton;
 import io.github.minigamecore.api.util.config.Configuration;
 import io.github.minigamecore.api.util.config.ConfigurationManager;
+import io.github.minigamecore.plugin.util.logger.MinigameCoreLogger;
+import org.slf4j.Logger;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -38,10 +39,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-@Singleton
 public final class ConfigurationManagerImpl implements ConfigurationManager {
 
-    private Map<Object, List<Configuration>> configMap = new HashMap<>();
+    private final Logger logger = new MinigameCoreLogger("ConfigurationManager");
+    private final Map<Object, List<Configuration>> configMap = new HashMap<>();
 
     @Override
     public void register(final Object plugin, final Configuration config) {

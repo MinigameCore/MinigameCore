@@ -34,7 +34,9 @@ import static org.spongepowered.api.Sponge.getPluginManager;
 
 import io.github.minigamecore.api.util.config.Configuration;
 import io.github.minigamecore.plugin.MinigameCore;
+import org.slf4j.Logger;
 
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -71,6 +73,24 @@ public final class Configurations {
 
     public static List<Configuration> getAll() {
         return configMap.entrySet().stream().map(Map.Entry::getValue).collect(toList());
+    }
+
+    // Special case for global.conf.
+    @SuppressWarnings("OptionalGetWithoutIsPresent")
+    public static void loadGlobal(Logger logger) {
+        try {
+            get("global").get().load();
+        } catch (IOException e) {
+            logger.error("Failed to load global configuration. This is going to be a problem!", e);
+        }
+    }
+
+    public static void saveGlobal(Logger logger) {
+        try {
+            Configurations.get("global").get().save();
+        } catch (IOException e) {
+            logger.error("Failed to save global configuration.", e);
+        }
     }
 
 }

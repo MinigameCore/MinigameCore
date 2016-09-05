@@ -23,7 +23,6 @@
  * THE SOFTWARE.
  */
 
-//TODO do javadocs
 @ParametersAreNonnullByDefault
 package io.github.minigamecore.plugin.config;
 

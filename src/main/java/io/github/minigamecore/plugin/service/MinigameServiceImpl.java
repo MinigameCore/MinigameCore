@@ -33,17 +33,20 @@ import com.google.inject.Module;
 import com.google.inject.Singleton;
 import io.github.minigamecore.api.MinigameService;
 import io.github.minigamecore.api.util.config.ConfigurationManager;
+import io.github.minigamecore.plugin.util.logger.MinigameCoreLogger;
+import org.slf4j.Logger;
 
 import javax.annotation.Nonnull;
 
 /*
  * The implementation for MinigameService.
  */
-@Singleton // Only one instance should be available
+@Singleton
 public final class MinigameServiceImpl implements MinigameService {
 
     private Injector injector;
     private final ConfigurationManager configManager;
+    private final Logger logger = new MinigameCoreLogger("MinigameService");
 
     @Inject
     private MinigameServiceImpl(ConfigurationManager configManager) {
@@ -74,6 +77,13 @@ public final class MinigameServiceImpl implements MinigameService {
     @Override
     public ConfigurationManager getConfigurationManager() {
         return configManager;
+    }
+
+    /*
+     * Special case for first time initialization.
+     */
+    public void setInjector(@Nonnull Injector injector) {
+        this.injector = injector;
     }
 
 }

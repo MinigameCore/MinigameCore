@@ -23,4 +23,20 @@
  * THE SOFTWARE.
  */
 
-package io.github.minigamecore.plugin.config.annotations;
+package io.github.minigamecore.plugin.util.logger;
+
+import com.google.inject.AbstractModule;
+import io.github.minigamecore.plugin.util.logger.annotations.MinigameCoreLog;
+import org.slf4j.Logger;
+
+/**
+ * The {@link MinigameCoreLogger} bindings.
+ */
+public final class MinigameCoreLoggerModule extends AbstractModule {
+
+    @Override
+    protected void configure() {
+        bind(Logger.class).annotatedWith(MinigameCoreLog.class).to(MinigameCoreLogger.class).asEagerSingleton();
+    }
+
+}
