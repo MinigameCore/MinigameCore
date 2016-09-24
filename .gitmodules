@@ -1,3 +1,6 @@
 [submodule "MinigameCoreAPI"]
 	path = MinigameCoreAPI
 	url = https://github.com/MinigameCore/MinigameCoreAPI
+[submodule "MCAP"]
+	path = MCAP
+	url = https://github.com/kinggoesgaming/MCAP.git

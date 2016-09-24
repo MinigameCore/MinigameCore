@@ -32,7 +32,8 @@ repositories {
 apply from: 'MinigameCoreAPI/gradle/shared.gradle'
 
 dependencies {
-    compile project(':MinigameCoreAPI')
+    compile project('MinigameCoreAPI')
+    compile project('MCAP')
 }
 
 license {

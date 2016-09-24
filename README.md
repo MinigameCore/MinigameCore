@@ -13,7 +13,7 @@ development faster. MinigameCore is licensed under the [MIT License](https://tld
 Follow the steps below to ensure your repository is cloned correctly. Note you must first fork the repository before
 cloning.
 
-1. Run `git clone https://github.com/USERNAME/MinigameCore.git --recursive`
+1. Run `git clone --recursive --init https://github.com/USERNAME/MinigameCore.git`
  - Be sure to replace `USERNAME` with your GitHub username. This will clone your fork to your computer.
 
 ## Contributing

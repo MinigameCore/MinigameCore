@@ -1,1 +1,3 @@
 include 'MinigameCoreAPI'
+include 'MCAP'
+include 'MCAP:MCAP-Annotate'
