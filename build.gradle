@@ -12,7 +12,6 @@ buildscript {
 
 plugins {
     id 'org.spongepowered.plugin' version '0.6'
-    id 'com.qixalite.spongestart' version '1.4.6'
     id 'com.github.johnrengelman.shadow' version '1.2.3'
 }
 
@@ -38,10 +37,6 @@ dependencies {
 
 license {
     header = file('MinigameCoreAPI/gradle/HEADER.txt')
-}
-
-spongestart {
-    eula true
 }
 
 jar {
