@@ -25,14 +25,12 @@
 
 package io.github.minigamecore.plugin.service;
 
-import static com.google.common.base.Preconditions.checkNotNull;
-
 import com.google.inject.Inject;
 import com.google.inject.Injector;
-import com.google.inject.Module;
 import com.google.inject.Singleton;
 import io.github.minigamecore.api.MinigameService;
 import io.github.minigamecore.api.util.config.ConfigurationManager;
+import io.github.minigamecore.api.util.manager.GuiceManager;
 import io.github.minigamecore.plugin.util.logger.MinigameCoreLogger;
 import org.slf4j.Logger;
 
@@ -46,31 +44,13 @@ public final class MinigameServiceImpl implements MinigameService {
 
     private Injector injector;
     private final ConfigurationManager configManager;
+    private final GuiceManager guiceManager;
     private final Logger logger = new MinigameCoreLogger("MinigameService");
 
     @Inject
-    private MinigameServiceImpl(ConfigurationManager configManager) {
+    private MinigameServiceImpl(ConfigurationManager configManager, GuiceManager guiceManager) {
         this.configManager = configManager;
-    }
-
-    @Nonnull
-    @Override
-    public Injector getInjector() {
-        return injector;
-    }
-
-    @Override
-    public void registerChildInjector(@Nonnull Module module) {
-        checkNotNull(module, "module");
-
-        injector = injector.createChildInjector(module);
-    }
-
-    @Override
-    public void registerChildInjector(Module[] modules) {
-        checkNotNull(modules, "module");
-
-        injector = injector.createChildInjector(modules);
+        this.guiceManager = guiceManager;
     }
 
     @Nonnull
@@ -79,11 +59,11 @@ public final class MinigameServiceImpl implements MinigameService {
         return configManager;
     }
 
-    /*
-     * Special case for first time initialization.
-     */
-    public void setInjector(@Nonnull Injector injector) {
-        this.injector = injector;
+    @Nonnull
+    @Override
+    public GuiceManager getGuiceManager() {
+        return guiceManager;
     }
+
 
 }

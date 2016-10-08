@@ -35,6 +35,7 @@ import com.google.inject.Injector;
 import com.google.inject.Module;
 import io.github.minigamecore.api.MinigameService;
 import io.github.minigamecore.api.util.config.ConfigurationManager;
+import io.github.minigamecore.api.util.manager.GuiceManager;
 import io.github.minigamecore.plugin.config.ConfigModule;
 import io.github.minigamecore.plugin.config.ConfigurationManagerImpl;
 import io.github.minigamecore.plugin.config.Configurations;
@@ -42,6 +43,7 @@ import io.github.minigamecore.plugin.service.MinigameServiceImpl;
 import io.github.minigamecore.plugin.util.logger.MinigameCoreLogger;
 import io.github.minigamecore.plugin.util.logger.MinigameCoreLoggerModule;
 import io.github.minigamecore.plugin.util.logger.MinigameCoreLoggerUtil;
+import io.github.minigamecore.plugin.util.manager.GuiceManagerImpl;
 import org.slf4j.Logger;
 import org.spongepowered.api.config.ConfigDir;
 import org.spongepowered.api.event.Listener;
@@ -92,6 +94,7 @@ public final class MinigameCore {
 
             // TODO Move this to a ManagersModule later
             binder.bind(ConfigurationManager.class).to(ConfigurationManagerImpl.class);
+            binder.bind(GuiceManager.class).to(GuiceManagerImpl.class);
             binder.install(new ConfigModule());
             binder.bind(MinigameService.class).to(MinigameServiceImpl.class);
         };
@@ -100,8 +103,8 @@ public final class MinigameCore {
 
         MinigameService service = defaultInjector.getInstance(MinigameService.class);
         getServiceManager().setProvider(this, MinigameService.class, service);
-        ((MinigameServiceImpl) service).setInjector(defaultInjector);
-        logger = service.getInjector().getInstance(MinigameCoreLogger.class);
+        ((GuiceManagerImpl)service.getGuiceManager()).setInjector(defaultInjector);
+        logger = service.getGuiceManager().getInjector().getInstance(MinigameCoreLogger.class);
         service.getConfigurationManager().save(this);
 
         Configurations.getAll().forEach(configuration -> defaultInjector.getInstance(ConfigurationManager.class).register(this, configuration));
