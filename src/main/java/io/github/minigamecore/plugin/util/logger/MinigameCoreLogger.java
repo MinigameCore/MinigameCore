@@ -56,7 +56,11 @@ public class MinigameCoreLogger implements Logger {
 
     @SuppressWarnings("ConstantConditions")
     public MinigameCoreLogger() {
-        this(null);
+        this((String)null);
+    }
+
+    public MinigameCoreLogger(@Nullable Class suffix) {
+        this(suffix == null ? null : suffix.getCanonicalName());
     }
 
     public MinigameCoreLogger(@Nullable String suffix) {

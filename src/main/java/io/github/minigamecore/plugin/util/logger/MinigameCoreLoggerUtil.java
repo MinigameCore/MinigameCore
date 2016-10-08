@@ -49,6 +49,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.zip.GZIPOutputStream;
 
@@ -61,7 +62,8 @@ public final class MinigameCoreLoggerUtil {
     private static File logFile;
 
     static void addToBuffer(LocalTime time, Level level, Logger logger, String message) {
-        String val = "[" + time.toString() + "] [" + level + "] [" + logger.getName() + "]: " + message + "\n";
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm:ss");
+        String val = "[" + time.format(formatter) + "] [" + level + "] [" + logger.getName() + "]: " + message + "\n";
         logBuffer.add(val);
     }
 
